@@ -41,9 +41,15 @@ namespace Encryptor
 					{
 						ModEntity mod = item as ModEntity;
 						if (mod == null) return null;
+
+						// Mostrar el nombre del archivo SIN extensión
+						string displayName = !string.IsNullOrEmpty(mod.ModFilePath)
+							? Storage.GetFileNameWithoutExtension(Storage.GetFileName(mod.ModFilePath))
+							: LanguageControl.Get("Encryptor", "UnknownMod");
+
 						return new LabelWidget
 						{
-							Text = mod.modInfo?.Name ?? Storage.GetFileName(mod.ModFilePath),
+							Text = displayName,
 							HorizontalAlignment = WidgetAlignment.Center,
 							VerticalAlignment = WidgetAlignment.Center,
 							Color = mod.IsDisabled ? Color.Gray : Color.White
@@ -147,7 +153,7 @@ namespace Encryptor
 					string.Format(LanguageControl.Get("Encryptor", "SuccessMessage"), destPath),
 					LanguageControl.Ok, null, null));
 
-				Log.Information(string.Format(LanguageControl.Get("Encryptor", "LogSuccess"), mod.modInfo?.Name ?? fileName, destPath));
+				Log.Information(string.Format(LanguageControl.Get("Encryptor", "LogSuccess"), baseName, destPath));
 			}
 			catch (Exception ex)
 			{
