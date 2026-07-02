@@ -1,16 +1,17 @@
 {
   "Encryptor": {
-  "Button": "Encriptar Mod",
-  "SelectTitle": "Seleccionar Mod a Encriptar",
-  "ErrorTitle": "Error",
-  "InfoTitle": "Información",
-  "SuccessTitle": "Éxito",
-  "FileNotFound": "El archivo del mod no existe.",
-  "InvalidExtension": "El archivo no es un mod válido. Debe tener extensión .scmod",
-  "AlreadyEncrypted": "El mod ya está encriptado. No es necesario volver a encriptarlo.",
-  "SuccessMessage": "El mod se ha encriptado correctamente.\nArchivo guardado en: {0}",
-  "ErrorMessage": "Ocurrió un error al encriptar el mod:\n{0}",
-  "LogSuccess": "Mod \"{0}\" encriptado correctamente en: {1}",
-  "LogError": "Error al encriptar mod: {0}"
-  } 
+    "Button": "Encriptar Mod",
+    "SelectTitle": "Seleccionar Mod a Encriptar",
+    "ErrorTitle": "Error",
+    "InfoTitle": "Información",
+    "SuccessTitle": "Éxito",
+    "UnknownMod": "Mod desconocido",
+    "FileNotFound": "El archivo del mod no existe.",
+    "InvalidExtension": "El archivo no es un mod válido. Debe tener extensión .scmod",
+    "AlreadyEncrypted": "El mod ya está encriptado. No es necesario volver a encriptarlo.",
+    "SuccessMessage": "El mod se ha encriptado correctamente.\nArchivo guardado en: {0}",
+    "ErrorMessage": "Ocurrió un error al encriptar el mod:\n{0}",
+    "LogSuccess": "Mod \"{0}\" encriptado correctamente en: {1}",
+    "LogError": "Error al encriptar mod: {0}"
+  }
 }
