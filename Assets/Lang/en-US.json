@@ -1,0 +1,16 @@
+{
+  "Encryptor": {
+    "Button": "Encrypt Mod",
+    "SelectTitle": "Select Mod to Encrypt",
+    "ErrorTitle": "Error",
+    "InfoTitle": "Information",
+    "SuccessTitle": "Success",
+    "FileNotFound": "The mod file does not exist.",
+    "InvalidExtension": "The file is not a valid mod. It must have the .scmod extension.",
+    "AlreadyEncrypted": "The mod is already encrypted. There is no need to encrypt it again.",
+    "SuccessMessage": "The mod has been encrypted successfully.\nFile saved at: {0}",
+    "ErrorMessage": "An error occurred while encrypting the mod:\n{0}",
+    "LogSuccess": "Mod \"{0}\" encrypted successfully at: {1}",
+    "LogError": "Error encrypting mod: {0}"
+  }
+}

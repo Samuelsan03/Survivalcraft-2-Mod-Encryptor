@@ -1,0 +1,16 @@
+{
+  "Encryptor": {
+    "Button": "加密模组",
+    "SelectTitle": "选择要加密的模组",
+    "ErrorTitle": "错误",
+    "InfoTitle": "信息",
+    "SuccessTitle": "成功",
+    "FileNotFound": "模组文件不存在。",
+    "InvalidExtension": "该文件不是有效的模组文件，必须使用 .scmod 扩展名。",
+    "AlreadyEncrypted": "该模组已加密，无需再次加密。",
+    "SuccessMessage": "模组已成功加密。\n文件已保存至：{0}",
+    "ErrorMessage": "加密模组时发生错误：\n{0}",
+    "LogSuccess": "模组 \"{0}\" 已成功加密，保存位置：{1}",
+    "LogError": "加密模组时出错：{0}"
+  }
+}
