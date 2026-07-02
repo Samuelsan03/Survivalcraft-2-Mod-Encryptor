@@ -1,8 +1,3 @@
-# Survivalcraft-2-Mod-Encryptor
-¡Excelente observación! Tienes toda la razón. He actualizado la descripción y la guía para reflejar con precisión cómo funciona el sistema de almacenamiento de archivos encriptados en esta versión.
-
----
-
 # Survivalcraft 2 Mod Encryptor
 
 ## 📖 Descripción
