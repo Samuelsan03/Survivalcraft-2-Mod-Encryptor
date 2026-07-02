@@ -9,7 +9,9 @@ namespace Encryptor
 {
 	public class EncryptorMODSModLoader : ModLoader
 	{
-		private static readonly string EncryptedModsFolder = "app:/EncryptedMods";
+		// Usar ExternalPath + "/EncryptedMods" (app:/EncryptedMods)
+		private static readonly string EncryptedModsFolder = ModsManager.ExternalPath + "/EncryptedMods";
+
 		private static readonly string HeadingCode2 = "修改他人mod请获得原作者授权，否则小心出名！";
 
 		public override void __ModInitialize()
@@ -25,7 +27,7 @@ namespace Encryptor
 				Style = ContentManager.Get<System.Xml.Linq.XElement>("Styles/ButtonStyle_310x60"),
 				HorizontalAlignment = WidgetAlignment.Center,
 				VerticalAlignment = WidgetAlignment.Center,
-				Margin = new Vector2(0f, 5f)
+				Margin = new Vector2(0f, 0f)
 			};
 
 			Action onClick = () =>
@@ -72,8 +74,11 @@ namespace Encryptor
 					return;
 				}
 
+				// Crear la carpeta EncryptedMods en la raíz (app:/EncryptedMods)
 				if (!Storage.DirectoryExists(EncryptedModsFolder))
+				{
 					Storage.CreateDirectory(EncryptedModsFolder);
+				}
 
 				string fileName = Storage.GetFileName(mod.ModFilePath);
 				string baseName = Storage.GetFileNameWithoutExtension(fileName);
@@ -90,6 +95,7 @@ namespace Encryptor
 
 				string newFileName = $"{baseName} (Encrypted){ext}";
 				string destPath = Storage.CombinePaths(EncryptedModsFolder, newFileName);
+
 				int counter = 1;
 				while (Storage.FileExists(destPath))
 				{
