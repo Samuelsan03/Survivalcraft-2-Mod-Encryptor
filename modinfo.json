@@ -4,7 +4,7 @@
   "ApiVersion": "1.9.0.1",
   "Description": "Este mini-mod trae de vuelta la función de Reinforcing, una característica que permite encriptar archivos .zip.scmod para añadir una capa extra de seguridad. Al utilizar esta función, el archivo quedará protegido y ya no podrá descomprimirse como un archivo ZIP convencional, ayudando a evitar el robo o la extracción no autorizada de los recursos de tu mod. Esta función estuvo disponible en la versión 2.3, pero con la llegada de la 2.4 (APIs 1.8 y 1.9) fue eliminada por razones desconocidas. Con este mini-mod, podrás volver a utilizarla para proteger tus proyectos sin tener que depender de la versión 2.3 únicamente para encriptar tus mods.",
   "ScVersion": "2.4.0.0",
-  "Link": "https://gitee.com/SC-SPM/SurvivalcraftApi",
+  "Link": "https://github.com/Samuelsan03/Survivalcraft-2-Mod-Encryptor",
   "Author": "Samuelsan03",
   "PackageName": "modencryptor",
   "Dependencies": {}
