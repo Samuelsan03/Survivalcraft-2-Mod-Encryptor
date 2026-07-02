@@ -1,3 +1,5 @@
+**Español** | [English](README.en.md) | [中文](README.zh.md)
+
 # Survivalcraft 2 Mod Encryptor
 
 ## 📖 Descripción
