@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SC Mod Encryptor · Samuelsan03</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 720px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            padding: 30px 28px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.08);
+        }
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        h1 {
+            font-weight: 600;
+            font-size: 1.7rem;
+            margin: 0;
+            color: #0b1e33;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        h1 small {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #64748b;
+            background: #eef2f6;
+            padding: 2px 12px;
+            border-radius: 30px;
+        }
+        .lang-selector {
+            display: flex;
+            gap: 6px;
+            background: #f1f4f9;
+            padding: 4px;
+            border-radius: 40px;
+        }
+        .lang-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.15s;
+            color: #334155;
+        }
+        .lang-btn.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            color: #0f172a;
+        }
+        .lang-btn:hover:not(.active) {
+            background: #e2e8f0;
+        }
+        .sub {
+            color: #475569;
+            font-size: 0.9rem;
+            margin-top: -4px;
+            margin-bottom: 16px;
+            border-left: 3px solid #3b82f6;
+            padding-left: 14px;
+        }
+        .info-box {
+            background: #f0f7ff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 4px 0 16px 0;
+            font-size: 0.9rem;
+            color: #1e293b;
+            border-left: 4px solid #3b82f6;
+        }
+        .info-box strong {
+            color: #0f172a;
+        }
+        #drop-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 38px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            background: #fafcff;
+            margin: 16px 0 18px 0;
+        }
+        #drop-area.dragover {
+            background: #e9eff8;
+            border-color: #3b82f6;
+        }
+        #drop-area p {
+            margin: 0 0 14px 0;
+            color: #334155;
+            font-size: 1.05rem;
+        }
+        #select-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 10px rgba(37,99,235,0.25);
+        }
+        #select-btn:hover {
+            background: #1d4ed8;
+        }
+        #file-info {
+            background: #f1f5f9;
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin: 14px 0;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #0f172a;
+            min-height: 56px;
+            word-break: break-all;
+        }
+        #file-info .name {
+            font-weight: 500;
+        }
+        #file-info .size {
+            color: #475569;
+            background: #e2e8f0;
+            padding: 3px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+        #encrypt-btn {
+            width: 100%;
+            padding: 15px;
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+            box-shadow: 0 4px 14px rgba(15,23,42,0.15);
+            margin: 6px 0 4px;
+        }
+        #encrypt-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            background: #64748b;
+            box-shadow: none;
+        }
+        #encrypt-btn:not(:disabled):hover {
+            background: #1e293b;
+        }
+        #status {
+            margin-top: 14px;
+            font-size: 0.95rem;
+            text-align: center;
+            min-height: 1.6rem;
+            color: #334155;
+        }
+        .footer {
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer .badge {
+            background: #dbeafe;
+            color: #1e40af;
+            border-radius: 30px;
+            padding: 2px 14px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .footer .credit {
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .footer .credit a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .footer .credit a:hover {
+            text-decoration: underline;
+        }
+        .desc-note {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 12px 0 6px;
+            font-size: 0.85rem;
+            color: #334155;
+            border: 1px solid #e9edf2;
+        }
+        .desc-note strong {
+            color: #0f172a;
+        }
+        @media (max-width: 500px) {
+            .container { padding: 20px 16px; }
+            h1 { font-size: 1.4rem; }
+            .lang-btn { font-size: 0.75rem; padding: 4px 10px; }
+            #drop-area { padding: 24px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <!-- HEADER con selector de idioma -->
+    <div class="header">
+        <h1>
+            🔒 Encryptor
+            <small>SC Mod</small>
+        </h1>
+        <div class="lang-selector" id="langSelector">
+            <button class="lang-btn active" data-lang="es">ES</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="zh">中文</button>
+            <button class="lang-btn" data-lang="vi">VN</button>
+        </div>
+    </div>
+
+    <!-- Subtítulo -->
+    <div class="sub" id="subText">
+        🧩 Survivalcraft 2 Mod Encryptor · sin necesidad del juego
+    </div>
+
+    <!-- Recuadro informativo (traducible) -->
+    <div class="info-box" id="infoBox">
+        <strong>⚡ Rápido y sin dependencias:</strong> arrastra tu <code>.zip</code> o <code>.scmod</code>, encripta y obtén tu mod ofuscado al instante. No necesitas tener el juego instalado.
+    </div>
+
+    <!-- Zona de arrastre -->
+    <div id="drop-area">
+        <p id="dropText">📂 Arrastra tu archivo <strong>.scmod</strong> o <strong>.zip</strong> aquí</p>
+        <button id="select-btn">Seleccionar archivo</button>
+        <input type="file" id="file-input" accept=".scmod,.zip" style="display:none;" />
+    </div>
+
+    <!-- Info del archivo -->
+    <div id="file-info">
+        <span class="name" id="file-name">archivo.scmod</span>
+        <span class="size" id="file-size">0 KB</span>
+    </div>
+
+    <!-- Botón principal -->
+    <button id="encrypt-btn" disabled>Encriptar y descargar</button>
+    <div id="status"></div>
+
+    <!-- Nota de uso (traducible) -->
+    <div class="desc-note" id="useNote">
+        <strong>📌 Uso:</strong> selecciona un archivo <code>.scmod</code> o <code>.zip</code>, haz clic en encriptar y guarda el nuevo archivo ofuscado. El algoritmo es el mismo que usa Survivalcraft 2 para proteger los mods. El archivo de salida se llamará <code>nombre (Encrypted).scmod</code>.
+    </div>
+
+    <!-- Footer con créditos fijos -->
+    <div class="footer">
+        <span class="badge" id="badgeText">algoritmo oficial SC</span>
+        <span class="credit">✧ creado por: <strong>Samuelsan03</strong></span>
+        <span style="font-size:0.7rem; opacity:0.7;">v1.1</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- TRADUCCIONES ----------
+        const LANG = {
+            es: {
+                sub: '🧩 Survivalcraft 2 Mod Encryptor · sin necesidad del juego',
+                info: '⚡ <strong>Rápido y sin dependencias:</strong> arrastra tu <code>.zip</code> o <code>.scmod</code>, encripta y obtén tu mod ofuscado al instante. No necesitas tener el juego instalado.',
+                drop: '📂 Arrastra tu archivo <strong>.scmod</strong> o <strong>.zip</strong> aquí',
+                selectBtn: 'Seleccionar archivo',
+                fileLoaded: '✅ Archivo cargado. Haz clic en "Encriptar y descargar".',
+                encryptBtn: 'Encriptar y descargar',
+                statusEmpty: '💡 Arrastra un archivo o haz clic para seleccionarlo.',
+                wrongExt: '⚠️ El archivo debe tener extensión .scmod o .zip',
+                noFile: '⚠️ No hay archivo cargado.',
+                success: (name) => `✅ Archivo encriptado guardado como "${name}"`,
+                error: (msg) => `❌ Error durante la encriptación: ${msg}`,
+                useNote: '📌 <strong>Uso:</strong> selecciona un archivo <code>.scmod</code> o <code>.zip</code>, haz clic en encriptar y guarda el nuevo archivo ofuscado. El algoritmo es el mismo que usa Survivalcraft 2 para proteger los mods. El archivo de salida se llamará <code>nombre (Encrypted).scmod</code>.',
+                badge: 'algoritmo oficial SC',
+                credit: '✧ creado por:'
+            },
+            en: {
+                sub: '🧩 Survivalcraft 2 Mod Encryptor · no game required',
+                info: '⚡ <strong>Fast & dependency‑free:</strong> drag your <code>.zip</code> or <code>.scmod</code>, encrypt, and get your obfuscated mod instantly. No need to have the game installed.',
+                drop: '📂 Drag your <strong>.scmod</strong> or <strong>.zip</strong> file here',
+                selectBtn: 'Select file',
+                fileLoaded: '✅ File loaded. Click "Encrypt & Download".',
+                encryptBtn: 'Encrypt & Download',
+                statusEmpty: '💡 Drag a file or click to select one.',
+                wrongExt: '⚠️ File must have .scmod or .zip extension',
+                noFile: '⚠️ No file loaded.',
+                success: (name) => `✅ Encrypted file saved as "${name}"`,
+                error: (msg) => `❌ Encryption error: ${msg}`,
+                useNote: '📌 <strong>Usage:</strong> select a <code>.scmod</code> or <code>.zip</code> file, click encrypt, and save the obfuscated file. The algorithm is the same one used by Survivalcraft 2 to protect mods. Output file will be named <code>name (Encrypted).scmod</code>.',
+                badge: 'official SC algorithm',
+                credit: '✧ created by:'
+            },
+            zh: {
+                sub: '🧩 Survivalcraft 2 模组加密器 · 无需游戏本体',
+                info: '⚡ <strong>快速且无依赖：</strong> 拖入您的 <code>.zip</code> 或 <code>.scmod</code> 文件，加密后立即获得混淆后的模组。无需安装游戏。',
+                drop: '📂 将您的 <strong>.scmod</strong> 或 <strong>.zip</strong> 文件拖放到此处',
+                selectBtn: '选择文件',
+                fileLoaded: '✅ 文件已加载。点击“加密并下载”。',
+                encryptBtn: '加密并下载',
+                statusEmpty: '💡 拖放文件或点击选择。',
+                wrongExt: '⚠️ 文件扩展名必须为 .scmod 或 .zip',
+                noFile: '⚠️ 未加载文件。',
+                success: (name) => `✅ 加密文件已保存为 "${name}"`,
+                error: (msg) => `❌ 加密错误: ${msg}`,
+                useNote: '📌 <strong>使用说明：</strong> 选择 <code>.scmod</code> 或 <code>.zip</code> 文件，点击加密并保存混淆后的文件。算法与 Survivalcraft 2 保护模组所用的算法相同。输出文件将命名为 <code>名称 (Encrypted).scmod</code>。',
+                badge: '官方 SC 算法',
+                credit: '✧ 创建者:'
+            },
+            vi: {
+                sub: '🧩 Survivalcraft 2 Mod Encryptor · không cần game',
+                info: '⚡ <strong>Nhanh và không phụ thuộc:</strong> kéo tệp <code>.zip</code> hoặc <code>.scmod</code> của bạn, mã hóa và nhận được tệp mod đã được làm rối ngay lập tức. Không cần cài đặt game.',
+                drop: '📂 Kéo tệp <strong>.scmod</strong> hoặc <strong>.zip</strong> của bạn vào đây',
+                selectBtn: 'Chọn tệp',
+                fileLoaded: '✅ Đã tải tệp. Nhấn "Mã hóa & Tải xuống".',
+                encryptBtn: 'Mã hóa & Tải xuống',
+                statusEmpty: '💡 Kéo tệp hoặc nhấn để chọn.',
+                wrongExt: '⚠️ Tệp phải có phần mở rộng .scmod hoặc .zip',
+                noFile: '⚠️ Chưa có tệp nào được tải.',
+                success: (name) => `✅ Đã lưu tệp mã hóa với tên "${name}"`,
+                error: (msg) => `❌ Lỗi mã hóa: ${msg}`,
+                useNote: '📌 <strong>Cách dùng:</strong> chọn tệp <code>.scmod</code> hoặc <code>.zip</code>, nhấn mã hóa và lưu tệp đã được làm rối. Thuật toán giống với thuật toán Survivalcraft 2 dùng để bảo vệ mod. Tệp đầu ra sẽ có tên <code>tên (Encrypted).scmod</code>.',
+                badge: 'thuật toán chính thức SC',
+                credit: '✧ tạo bởi:'
+            }
+        };
+
+        // ---------- DOM ----------
+        const langBtns = document.querySelectorAll('.lang-btn');
+        const subText = document.getElementById('subText');
+        const infoBox = document.getElementById('infoBox');
+        const dropText = document.getElementById('dropText');
+        const selectBtn = document.getElementById('select-btn');
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const fileNameSpan = document.getElementById('file-name');
+        const fileSizeSpan = document.getElementById('file-size');
+        const encryptBtn = document.getElementById('encrypt-btn');
+        const statusDiv = document.getElementById('status');
+        const dropArea = document.getElementById('drop-area');
+        const useNote = document.getElementById('useNote');
+        const badgeText = document.getElementById('badgeText');
+        const creditSpan = document.querySelector('.credit');
+
+        // Estado
+        let currentLang = 'es';
+        let currentFile = null;
+        let currentArrayBuffer = null;
+
+        // Constantes del algoritmo
+        const HEADER_TEXT = "修改他人mod请获得原作者授权，否则小心出名！";
+        const headerBytes = new TextEncoder().encode(HEADER_TEXT);
+
+        // ---------- Funciones de utilidad ----------
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const units = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            const val = (bytes / Math.pow(k, i)).toFixed(1);
+            return val + ' ' + units[i];
+        }
+
+        // Algoritmo de fortalecimiento (StrengtheningMod)
+        function strengthenMod(originalBytes) {
+            const totalLen = originalBytes.length + headerBytes.length;
+            const result = new Uint8Array(totalLen);
+            result.set(headerBytes, 0);
+            let pos = headerBytes.length;
+            for (let i = 0; i < originalBytes.length; i++) {
+                if (i % 2 === 0) {
+                    result[pos++] = originalBytes[i];
+                }
+            }
+            pos = headerBytes.length + Math.ceil(originalBytes.length / 2);
+            for (let i = 0; i < originalBytes.length; i++) {
+                if (i % 2 !== 0) {
+                    result[pos++] = originalBytes[i];
+                }
+            }
+            return result;
+        }
+
+        // ---------- Traducción dinámica ----------
+        function updateLanguage(lang) {
+            const t = LANG[lang];
+            if (!t) return;
+            subText.innerHTML = t.sub;
+            infoBox.innerHTML = t.info;
+            dropText.innerHTML = t.drop;
+            selectBtn.textContent = t.selectBtn;
+            encryptBtn.textContent = t.encryptBtn;
+            useNote.innerHTML = t.useNote;
+            badgeText.textContent = t.badge;
+            // Actualizar el crédito manteniendo el nombre fijo
+            creditSpan.innerHTML = t.credit + ' <strong>Samuelsan03</strong>';
+            // Actualizar estado si no hay archivo cargado
+            if (!currentFile) {
+                statusDiv.textContent = t.statusEmpty;
+                statusDiv.style.color = '#64748b';
+            } else {
+                statusDiv.textContent = t.fileLoaded;
+                statusDiv.style.color = '#15803d';
+            }
+            // Botones de idioma activo
+            langBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            currentLang = lang;
+        }
+
+        // ---------- Manejo de archivo ----------
+        function handleFile(file) {
+            if (!file) {
+                resetUI();
+                return;
+            }
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext !== 'scmod' && ext !== 'zip') {
+                const t = LANG[currentLang];
+                statusDiv.textContent = t.wrongExt;
+                statusDiv.style.color = '#b45309';
+                resetUI();
+                return;
+            }
+            currentFile = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentArrayBuffer = e.target.result;
+                fileInfo.style.display = 'flex';
+                fileNameSpan.textContent = file.name;
+                fileSizeSpan.textContent = formatSize(file.size);
+                encryptBtn.disabled = false;
+                const t = LANG[currentLang];
+                statusDiv.textContent = t.fileLoaded;
+                statusDiv.style.color = '#15803d';
+            };
+            reader.onerror = function() {
+                const t = LANG[currentLang];
+                statusDiv.textContent = t.error('Error al leer el archivo');
+                statusDiv.style.color = '#dc2626';
+                resetUI();
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function resetUI() {
+            currentFile = null;
+            currentArrayBuffer = null;
+            fileInfo.style.display = 'none';
+            encryptBtn.disabled = true;
+            const t = LANG[currentLang];
+            statusDiv.textContent = t.statusEmpty;
+            statusDiv.style.color = '#64748b';
+        }
+
+        // ---------- Eventos de idioma ----------
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const lang = this.dataset.lang;
+                if (lang === currentLang) return;
+                updateLanguage(lang);
+            });
+        });
+
+        // ---------- Drag & drop ----------
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('dragover');
+        });
+        dropArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+        });
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        dropArea.addEventListener('click', (e) => {
+            if (e.target === selectBtn) return;
+            fileInput.click();
+        });
+        selectBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (fileInput.files.length > 0) {
+                handleFile(fileInput.files[0]);
+            } else {
+                resetUI();
+            }
+            fileInput.value = '';
+        });
+
+        // ---------- Botón encriptar ----------
+        encryptBtn.addEventListener('click', () => {
+            if (!currentArrayBuffer) {
+                const t = LANG[currentLang];
+                statusDiv.textContent = t.noFile;
+                statusDiv.style.color = '#b45309';
+                return;
+            }
+            try {
+                const original = new Uint8Array(currentArrayBuffer);
+                const encrypted = strengthenMod(original);
+                const blob = new Blob([encrypted], { type: 'application/octet-stream' });
+                // Nombre de salida: baseName (Encrypted).scmod
+                const baseName = currentFile.name.replace(/\.[^.]+$/, '');
+                const outName = baseName + ' (Encrypted).scmod';
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = outName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+                const t = LANG[currentLang];
+                statusDiv.textContent = t.success(outName);
+                statusDiv.style.color = '#15803d';
+            } catch (err) {
+                const t = LANG[currentLang];
+                statusDiv.textContent = t.error(err.message);
+                statusDiv.style.color = '#dc2626';
+                console.error(err);
+            }
+        });
+
+        // ---------- Inicializar en español ----------
+        updateLanguage('es');
+    })();
+</script>
+</body>
+</html>
