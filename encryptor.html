@@ -1,576 +1,818 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SC Mod Encryptor · Samuelsan03</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SC2 Mod Encryptor - Samuelsan03</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Chakra+Petch:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            box-sizing: border-box;
+        [data-theme="dark"] {
+            --bg: #0f0d0a;
+            --bg2: #1a1610;
+            --card: #231e16;
+            --card-hover: #2c2519;
+            --border: #3d3428;
+            --border-glow: #5a4d3a;
+            --fg: #e8e0d4;
+            --fg-muted: #9a8e7e;
+            --accent: #e8a634;
+            --accent-hover: #f0b844;
+            --accent-dim: rgba(232,166,52,0.15);
+            --accent-glow: rgba(232,166,52,0.35);
+            --success: #4ade80;
+            --success-bg: rgba(74,222,128,0.12);
+            --error: #f87171;
+            --error-bg: rgba(248,113,113,0.12);
+            --warning: #fbbf24;
+            --warning-bg: rgba(251,191,36,0.12);
+            --info-bg: rgba(232,166,52,0.10);
+            --particle-base: 232;
+            --particle-green: 140;
+            --particle-blue: 30;
+            --shadow: 0 4px 24px rgba(0,0,0,0.5);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.6);
         }
+        [data-theme="light"] {
+            --bg: #f0e8da;
+            --bg2: #e8dece;
+            --card: #faf6ef;
+            --card-hover: #f5efe4;
+            --border: #d4c9b8;
+            --border-glow: #c0b49e;
+            --fg: #2a2018;
+            --fg-muted: #7a6e5e;
+            --accent: #b8751a;
+            --accent-hover: #d48820;
+            --accent-dim: rgba(184,117,26,0.10);
+            --accent-glow: rgba(184,117,26,0.25);
+            --success: #16a34a;
+            --success-bg: rgba(22,163,74,0.10);
+            --error: #dc2626;
+            --error-bg: rgba(220,38,38,0.10);
+            --warning: #d97706;
+            --warning-bg: rgba(217,119,6,0.10);
+            --info-bg: rgba(184,117,26,0.08);
+            --particle-base: 200;
+            --particle-green: 130;
+            --particle-blue: 40;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Chakra Petch', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
+            transition: background 0.4s, color 0.4s;
+            overflow-x: hidden;
         }
-        .container {
-            max-width: 720px;
-            width: 100%;
-            background: white;
-            border-radius: 24px;
-            padding: 30px 28px;
-            box-shadow: 0 12px 36px rgba(0,0,0,0.08);
+        .pixel-font { font-family: 'Press Start 2P', monospace; }
+        #particles-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
         }
-        .header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
+        .main-container {
+            position: relative; z-index: 1;
+            max-width: 560px; margin: 0 auto;
+            padding: 2rem 1.25rem 3rem;
         }
-        h1 {
-            font-weight: 600;
-            font-size: 1.7rem;
-            margin: 0;
-            color: #0b1e33;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .app-header { text-align: center; margin-bottom: 2.5rem; padding-top: 1rem; }
+        .app-title {
+            font-size: clamp(0.6rem, 2.5vw, 0.88rem);
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            line-height: 1.8;
+            text-shadow: 0 0 20px var(--accent-glow);
         }
-        h1 small {
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: #64748b;
-            background: #eef2f6;
-            padding: 2px 12px;
-            border-radius: 30px;
+        .app-subtitle {
+            font-size: 0.85rem; color: var(--fg-muted);
+            margin-top: 0.5rem; font-weight: 300;
         }
-        .lang-selector {
-            display: flex;
-            gap: 6px;
-            background: #f1f4f9;
-            padding: 4px;
-            border-radius: 40px;
+        .app-by {
+            font-size: 0.75rem; color: var(--accent);
+            opacity: 0.7; margin-top: 0.25rem; font-weight: 600;
         }
-        .lang-btn {
-            border: none;
-            background: transparent;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.15s;
-            color: #334155;
+        .top-controls {
+            display: flex; justify-content: center;
+            align-items: center; gap: 1rem;
+            margin-bottom: 2rem; flex-wrap: wrap;
         }
-        .lang-btn.active {
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            color: #0f172a;
+        .theme-toggle, .lang-select {
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--fg); border-radius: 8px;
+            padding: 0.5rem 0.85rem;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.82rem; cursor: pointer;
+            transition: all 0.25s;
+            display: flex; align-items: center; gap: 0.4rem;
         }
-        .lang-btn:hover:not(.active) {
-            background: #e2e8f0;
+        .theme-toggle:hover, .lang-select:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent-dim);
         }
-        .sub {
-            color: #475569;
-            font-size: 0.9rem;
-            margin-top: -4px;
-            margin-bottom: 16px;
-            border-left: 3px solid #3b82f6;
-            padding-left: 14px;
+        .lang-select {
+            appearance: none; padding-right: 2rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%239a8e7e' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.6rem center;
         }
-        .info-box {
-            background: #f0f7ff;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin: 4px 0 16px 0;
-            font-size: 0.9rem;
-            color: #1e293b;
-            border-left: 4px solid #3b82f6;
+        .lang-select option { background: var(--card); color: var(--fg); }
+
+        .drop-zone {
+            border: 2px dashed var(--border); border-radius: 16px;
+            padding: 3rem 2rem; text-align: center; cursor: pointer;
+            transition: all 0.3s ease; background: var(--card);
+            position: relative; overflow: hidden;
         }
-        .info-box strong {
-            color: #0f172a;
+        .drop-zone::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center, var(--accent-dim) 0%, transparent 70%);
+            opacity: 0; transition: opacity 0.3s;
         }
-        #drop-area {
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
-            padding: 38px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s;
-            background: #fafcff;
-            margin: 16px 0 18px 0;
+        .drop-zone:hover { border-color: var(--border-glow); }
+        .drop-zone:hover::before { opacity: 1; }
+        .drop-zone.drag-over {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow), inset 0 0 30px var(--accent-dim);
+            transform: scale(1.02);
         }
-        #drop-area.dragover {
-            background: #e9eff8;
-            border-color: #3b82f6;
+        .drop-zone.drag-over::before { opacity: 1; }
+        .drop-zone.has-file { border-color: var(--success); border-style: solid; }
+        .drop-icon {
+            font-size: 2.5rem; color: var(--fg-muted);
+            margin-bottom: 1rem; transition: all 0.3s;
         }
-        #drop-area p {
-            margin: 0 0 14px 0;
-            color: #334155;
-            font-size: 1.05rem;
+        .drop-zone:hover .drop-icon { color: var(--accent); transform: translateY(-4px); }
+        .drop-zone.drag-over .drop-icon { color: var(--accent); transform: translateY(-8px) scale(1.1); }
+        .drop-zone.has-file .drop-icon { color: var(--success); }
+        .drop-text { font-size: 0.95rem; color: var(--fg-muted); position: relative; z-index: 1; }
+        .drop-text strong { color: var(--accent); font-weight: 600; }
+        .drop-or { font-size: 0.78rem; color: var(--fg-muted); opacity: 0.6; margin: 0.4rem 0; position: relative; z-index: 1; }
+        .drop-hint { font-size: 0.72rem; color: var(--fg-muted); opacity: 0.5; margin-top: 0.75rem; position: relative; z-index: 1; }
+        #file-input { display: none; }
+
+        .info-panel {
+            margin-top: 1.25rem; background: var(--card);
+            border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden; max-height: 0; opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
         }
-        #select-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 10px 28px;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-            box-shadow: 0 2px 10px rgba(37,99,235,0.25);
+        .info-panel.visible { max-height: 200px; opacity: 1; }
+        .info-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem;
         }
-        #select-btn:hover {
-            background: #1d4ed8;
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--fg-muted); font-weight: 400; }
+        .info-value { color: var(--fg); font-weight: 600; text-align: right; max-width: 60%; word-break: break-all; }
+        .badge {
+            display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em;
         }
-        #file-info {
-            background: #f1f5f9;
-            border-radius: 14px;
-            padding: 14px 18px;
-            margin: 14px 0;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.95rem;
-            color: #0f172a;
-            min-height: 56px;
-            word-break: break-all;
+        .badge-ok { background: var(--success-bg); color: var(--success); border: 1px solid var(--success); }
+        .badge-err { background: var(--error-bg); color: var(--error); border: 1px solid var(--error); }
+
+        .action-area { margin-top: 1.5rem; }
+        .btn {
+            width: 100%; padding: 0.95rem 1.2rem; border: none; border-radius: 10px;
+            font-family: 'Chakra Petch', sans-serif; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; transition: all 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            position: relative; overflow: hidden;
         }
-        #file-info .name {
-            font-weight: 500;
+        .btn::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+            pointer-events: none;
         }
-        #file-info .size {
-            color: #475569;
-            background: #e2e8f0;
-            padding: 3px 14px;
-            border-radius: 30px;
-            font-size: 0.8rem;
+        .btn-encrypt {
+            background: linear-gradient(135deg, #b8751a, #e8a634);
+            color: #1a1410; box-shadow: 0 4px 16px rgba(184,117,26,0.3);
         }
-        #encrypt-btn {
-            width: 100%;
-            padding: 15px;
-            background: #0f172a;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, opacity 0.2s;
-            box-shadow: 0 4px 14px rgba(15,23,42,0.15);
-            margin: 6px 0 4px;
+        .btn-encrypt:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(184,117,26,0.45);
         }
-        #encrypt-btn:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-            background: #64748b;
-            box-shadow: none;
+        .btn:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+        .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .btn .spinner {
+            width: 16px; height: 16px; border: 2px solid transparent;
+            border-top-color: currentColor; border-radius: 50%;
+            animation: spin 0.6s linear infinite; display: none;
         }
-        #encrypt-btn:not(:disabled):hover {
-            background: #1e293b;
+        .btn.loading .spinner { display: block; }
+        .btn.loading .btn-icon { display: none; }
+
+        .download-area {
+            margin-top: 1rem; max-height: 0; opacity: 0; overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
         }
-        #status {
-            margin-top: 14px;
-            font-size: 0.95rem;
-            text-align: center;
-            min-height: 1.6rem;
-            color: #334155;
+        .download-area.visible { max-height: 80px; opacity: 1; }
+        .btn-download {
+            background: linear-gradient(135deg, #16a34a, #4ade80);
+            color: #052e16; box-shadow: 0 4px 16px rgba(22,163,74,0.3);
+            animation: pulse-glow 2s ease-in-out infinite;
         }
-        .footer {
-            margin-top: 24px;
-            font-size: 0.8rem;
-            color: #64748b;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 16px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
+        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(22,163,74,0.45); }
+
+        .reset-btn {
+            margin-top: 1.5rem; width: 100%; background: none;
+            border: 1px dashed var(--border); color: var(--fg-muted);
+            font-family: 'Chakra Petch', sans-serif; font-size: 0.78rem;
+            padding: 0.6rem; border-radius: 8px; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center;
+            justify-content: center; gap: 0.4rem;
         }
-        .footer .badge {
-            background: #dbeafe;
-            color: #1e40af;
-            border-radius: 30px;
-            padding: 2px 14px;
-            font-size: 0.7rem;
-            font-weight: 500;
+        .reset-btn:hover { border-color: var(--error); color: var(--error); }
+
+        .app-footer {
+            text-align: center; margin-top: 3rem; padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.72rem; color: var(--fg-muted); opacity: 0.5;
         }
-        .footer .credit {
-            font-weight: 500;
-            color: #1e293b;
+
+        #toast-container {
+            position: fixed; top: 1rem; right: 1rem; z-index: 1000;
+            display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none;
         }
-        .footer .credit a {
-            color: #2563eb;
-            text-decoration: none;
+        .toast {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 0.75rem 1.1rem; font-size: 0.82rem;
+            box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.6rem;
+            pointer-events: auto; animation: toast-in 0.35s ease forwards;
+            max-width: 340px; backdrop-filter: blur(12px);
         }
-        .footer .credit a:hover {
-            text-decoration: underline;
+        .toast.toast-out { animation: toast-out 0.3s ease forwards; }
+        .toast-success { border-left: 3px solid var(--success); }
+        .toast-success .toast-icon { color: var(--success); }
+        .toast-error { border-left: 3px solid var(--error); }
+        .toast-error .toast-icon { color: var(--error); }
+        .toast-warning { border-left: 3px solid var(--warning); }
+        .toast-warning .toast-icon { color: var(--warning); }
+        .toast-info { border-left: 3px solid var(--accent); }
+        .toast-info .toast-icon { color: var(--accent); }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes toast-in { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toast-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 4px 16px rgba(22,163,74,0.3); }
+            50% { box-shadow: 0 4px 28px rgba(22,163,74,0.5); }
         }
-        .desc-note {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin: 12px 0 6px;
-            font-size: 0.85rem;
-            color: #334155;
-            border: 1px solid #e9edf2;
-        }
-        .desc-note strong {
-            color: #0f172a;
-        }
+        @keyframes float-in { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .float-in { animation: float-in 0.5s ease forwards; }
+
         @media (max-width: 500px) {
-            .container { padding: 20px 16px; }
-            h1 { font-size: 1.4rem; }
-            .lang-btn { font-size: 0.75rem; padding: 4px 10px; }
-            #drop-area { padding: 24px 12px; }
+            .main-container { padding: 1.25rem 0.9rem 2rem; }
+            .drop-zone { padding: 2rem 1.25rem; }
+            .app-title { font-size: 0.55rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+            #particles-canvas { display: none; }
         }
     </style>
 </head>
 <body>
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
-<div class="container" id="app">
-    <!-- HEADER con selector de idioma -->
-    <div class="header">
-        <h1>
-            🔒 Encryptor
-            <small>SC Mod</small>
-        </h1>
-        <div class="lang-selector" id="langSelector">
-            <button class="lang-btn active" data-lang="es">ES</button>
-            <button class="lang-btn" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="zh">中文</button>
-            <button class="lang-btn" data-lang="vi">VN</button>
-        </div>
+    <div class="main-container">
+        <header class="app-header float-in">
+            <h1 class="app-title pixel-font" data-i18n="title">Survivalcraft 2 Mod Encryptor</h1>
+            <p class="app-subtitle" data-i18n="subtitle">Herramienta de encriptacion para mods .scmod</p>
+            <p class="app-by" data-i18n="by">por Samuelsan03</p>
+        </header>
+
+        <nav class="top-controls float-in" style="animation-delay:0.1s" aria-label="Controles de interfaz">
+            <button class="theme-toggle" id="theme-btn" aria-label="Cambiar tema">
+                <i class="fa-solid fa-moon" id="theme-icon"></i>
+                <span data-i18n="darkMode">Modo oscuro</span>
+            </button>
+            <select class="lang-select" id="lang-select" aria-label="Seleccionar idioma">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+                <option value="zh">中文</option>
+                <option value="vi">Tiếng Việt</option>
+                <option value="pt">Português</option>
+                <option value="ru">Русский</option>
+            </select>
+        </nav>
+
+        <main>
+            <section class="drop-zone float-in" id="drop-zone" style="animation-delay:0.2s" role="button" tabindex="0" aria-label="Zona para soltar archivo">
+                <div class="drop-icon"><i class="fa-solid fa-file-zipper"></i></div>
+                <p class="drop-text"><strong data-i18n="selectFile">Seleccionar archivo .scmod</strong></p>
+                <p class="drop-or" data-i18n="or">o</p>
+                <p class="drop-text" data-i18n="dragDrop" style="font-size:0.82rem;opacity:0.7">Arrastra y suelta tu archivo aqui</p>
+                <p class="drop-hint">.scmod</p>
+                <input type="file" id="file-input" accept=".scmod">
+            </section>
+
+            <section class="info-panel" id="info-panel" aria-live="polite">
+                <div class="info-row">
+                    <span class="info-label" data-i18n="fileName">Nombre del archivo</span>
+                    <span class="info-value" id="info-name">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label" data-i18n="fileSize">Tamano</span>
+                    <span class="info-value" id="info-size">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label" data-i18n="encryptionStatus">Estado</span>
+                    <span class="info-value" id="info-status">-</span>
+                </div>
+            </section>
+
+            <div class="action-area float-in" style="animation-delay:0.3s">
+                <button class="btn btn-encrypt" id="btn-encrypt" disabled>
+                    <span class="spinner"></span>
+                    <i class="fa-solid fa-lock btn-icon"></i>
+                    <span data-i18n="encrypt">Encriptar Mod</span>
+                </button>
+            </div>
+
+            <div class="download-area" id="download-area">
+                <button class="btn btn-download" id="btn-download">
+                    <i class="fa-solid fa-download"></i>
+                    <span data-i18n="download">Descargar resultado</span>
+                </button>
+            </div>
+
+            <button class="reset-btn" id="btn-reset" style="display:none">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span data-i18n="reset">Reiniciar</span>
+            </button>
+        </main>
+
+        <footer class="app-footer float-in" style="animation-delay:0.4s">
+            <p data-i18n="credits">Creado con dedicacion para la comunidad de Survivalcraft 2</p>
+        </footer>
     </div>
 
-    <!-- Subtítulo -->
-    <div class="sub" id="subText">
-        🧩 Survivalcraft 2 Mod Encryptor · sin necesidad del juego
-    </div>
+    <div id="toast-container" aria-live="assertive"></div>
 
-    <!-- Recuadro informativo (traducible) -->
-    <div class="info-box" id="infoBox">
-        <strong>⚡ Rápido y sin dependencias:</strong> arrastra tu <code>.zip</code> o <code>.scmod</code>, encripta y obtén tu mod ofuscado al instante. No necesitas tener el juego instalado.
-    </div>
+    <script>
+    /* === Internacionalización === */
+    const LANG = {
+        es: {
+            title: "Survivalcraft 2 Mod Encryptor",
+            subtitle: "Herramienta de encriptacion para mods .scmod",
+            by: "por Samuelsan03",
+            encrypt: "Encriptar Mod",
+            selectFile: "Seleccionar archivo .scmod",
+            dragDrop: "Arrastra y suelta tu archivo aqui",
+            or: "o",
+            successEncrypt: "Mod encriptado correctamente",
+            errorAlreadyEncrypted: "El archivo ya esta encriptado",
+            errorInvalidFile: "Archivo no valido. Selecciona un archivo .scmod",
+            errorGeneric: "Ocurrio un error al procesar el archivo",
+            fileName: "Nombre del archivo",
+            fileSize: "Tamano",
+            encryptionStatus: "Estado",
+            ready: "Listo para encriptar",
+            alreadyEncrypted: "Ya encriptado",
+            download: "Descargar resultado",
+            darkMode: "Modo oscuro",
+            lightMode: "Modo claro",
+            reset: "Reiniciar",
+            fileSelected: "Archivo seleccionado",
+            credits: "Creado con dedicacion para la comunidad de Survivalcraft 2"
+        },
+        en: {
+            title: "Survivalcraft 2 Mod Encryptor",
+            subtitle: "Encryption tool for .scmod files",
+            by: "by Samuelsan03",
+            encrypt: "Encrypt Mod",
+            selectFile: "Select .scmod file",
+            dragDrop: "Drag and drop your file here",
+            or: "or",
+            successEncrypt: "Mod encrypted successfully",
+            errorAlreadyEncrypted: "File is already encrypted",
+            errorInvalidFile: "Invalid file. Please select a .scmod file",
+            errorGeneric: "An error occurred while processing the file",
+            fileName: "File name",
+            fileSize: "Size",
+            encryptionStatus: "Status",
+            ready: "Ready to encrypt",
+            alreadyEncrypted: "Already encrypted",
+            download: "Download result",
+            darkMode: "Dark mode",
+            lightMode: "Light mode",
+            reset: "Reset",
+            fileSelected: "File selected",
+            credits: "Created with dedication for the Survivalcraft 2 community"
+        },
+        zh: {
+            title: "Survivalcraft 2 Mod 加密工具",
+            subtitle: ".scmod 文件加密工具",
+            by: "作者：Samuelsan03",
+            encrypt: "加密 Mod",
+            selectFile: "选择 .scmod 文件",
+            dragDrop: "将文件拖放到此处",
+            or: "或",
+            successEncrypt: "Mod 加密成功",
+            errorAlreadyEncrypted: "文件已加密",
+            errorInvalidFile: "无效文件，请选择 .scmod 文件",
+            errorGeneric: "处理文件时发生错误",
+            fileName: "文件名",
+            fileSize: "大小",
+            encryptionStatus: "状态",
+            ready: "准备加密",
+            alreadyEncrypted: "已加密",
+            download: "下载结果",
+            darkMode: "深色模式",
+            lightMode: "浅色模式",
+            reset: "重置",
+            fileSelected: "已选择文件",
+            credits: "为 Survivalcraft 2 社区用心打造"
+        },
+        vi: {
+            title: "Survivalcraft 2 Mod Ma Hoa",
+            subtitle: "Cong cu ma hoa file .scmod",
+            by: "boi Samuelsan03",
+            encrypt: "Ma Hoa Mod",
+            selectFile: "Chon file .scmod",
+            dragDrop: "Keo va tha file vao day",
+            or: "hoac",
+            successEncrypt: "Ma hoa mod thanh cong",
+            errorAlreadyEncrypted: "File da duoc ma hoa",
+            errorInvalidFile: "File khong hop le. Vui long chon file .scmod",
+            errorGeneric: "Da xay ra loi khi xu ly file",
+            fileName: "Ten file",
+            fileSize: "Kich thuoc",
+            encryptionStatus: "Trang thai",
+            ready: "San sang ma hoa",
+            alreadyEncrypted: "Da ma hoa",
+            download: "Tai ket qua",
+            darkMode: "Che do toi",
+            lightMode: "Che do sang",
+            reset: "Dat lai",
+            fileSelected: "Da chon file",
+            credits: "Duoc tao voi tam huyet cho cong dong Survivalcraft 2"
+        },
+        pt: {
+            title: "Survivalcraft 2 Mod Encryptor",
+            subtitle: "Ferramenta de criptografia para mods .scmod",
+            by: "por Samuelsan03",
+            encrypt: "Criptografar Mod",
+            selectFile: "Selecionar arquivo .scmod",
+            dragDrop: "Arraste e solte seu arquivo aqui",
+            or: "ou",
+            successEncrypt: "Mod criptografado com sucesso",
+            errorAlreadyEncrypted: "O arquivo ja esta criptografado",
+            errorInvalidFile: "Arquivo invalido. Selecione um arquivo .scmod",
+            errorGeneric: "Ocorreu um erro ao processar o arquivo",
+            fileName: "Nome do arquivo",
+            fileSize: "Tamanho",
+            encryptionStatus: "Status",
+            ready: "Pronto para criptografar",
+            alreadyEncrypted: "Ja criptografado",
+            download: "Baixar resultado",
+            darkMode: "Modo escuro",
+            lightMode: "Modo claro",
+            reset: "Redefinir",
+            fileSelected: "Arquivo selecionado",
+            credits: "Criado com dedicacao para a comunidade Survivalcraft 2"
+        },
+        ru: {
+            title: "Survivalcraft 2 Mod Encryptor",
+            subtitle: "Instrument shifrovaniya dlya modov .scmod",
+            by: "ot Samuelsan03",
+            encrypt: "Zashifrovat mod",
+            selectFile: "Vybrat file .scmod",
+            dragDrop: "Peretashchte file syuda",
+            or: "ili",
+            successEncrypt: "Mod uspeshno zashifrovan",
+            errorAlreadyEncrypted: "File uzhe zashifrovan",
+            errorInvalidFile: "Neverny file. Vyberite file .scmod",
+            errorGeneric: "Proizoshla oshibka pri obrabotke file",
+            fileName: "Imya file",
+            fileSize: "Razmer",
+            encryptionStatus: "Status",
+            ready: "Gotovo k shifrovaniyu",
+            alreadyEncrypted: "Uzhe zashifrovan",
+            download: "Skachat rezultat",
+            darkMode: "Tyomnaya tema",
+            lightMode: "Svetlaya tema",
+            reset: "Sbrosit",
+            fileSelected: "File vybran",
+            credits: "Sozdano s dedikatsiey dlya soobshestva Survivalcraft 2"
+        }
+    };
 
-    <!-- Zona de arrastre -->
-    <div id="drop-area">
-        <p id="dropText">📂 Arrastra tu archivo <strong>.scmod</strong> o <strong>.zip</strong> aquí</p>
-        <button id="select-btn">Seleccionar archivo</button>
-        <input type="file" id="file-input" accept=".scmod,.zip" style="display:none;" />
-    </div>
+    /* === Estado === */
+    let currentLang = 'es';
+    let currentTheme = 'dark';
+    let selectedFile = null;
+    let fileBytes = null;
+    let isEncrypted = false;
+    let resultBytes = null;
+    let resultFileName = null;
 
-    <!-- Info del archivo -->
-    <div id="file-info">
-        <span class="name" id="file-name">archivo.scmod</span>
-        <span class="size" id="file-size">0 KB</span>
-    </div>
+    // Encabezados fijos del juego
+    const HC1 = new TextEncoder().encode('Survivalcraft_ModFile');
+    const HC2 = new TextEncoder().encode('Survivalcraft_ModFile2');
 
-    <!-- Botón principal -->
-    <button id="encrypt-btn" disabled>Encriptar y descargar</button>
-    <div id="status"></div>
+    /* === Utilidades i18n === */
+    function t(key) { return (LANG[currentLang] && LANG[currentLang][key]) || LANG.es[key] || key; }
 
-    <!-- Nota de uso (traducible) -->
-    <div class="desc-note" id="useNote">
-        <strong>📌 Uso:</strong> selecciona un archivo <code>.scmod</code> o <code>.zip</code>, haz clic en encriptar y guarda el nuevo archivo ofuscado. El algoritmo es el mismo que usa Survivalcraft 2 para proteger los mods. El archivo de salida se llamará <code>nombre (Encrypted).scmod</code>.
-    </div>
+    function applyLang(lang) {
+        currentLang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (LANG[lang] && LANG[lang][key]) el.textContent = LANG[lang][key];
+        });
+        const themeLabel = document.querySelector('#theme-btn span');
+        if (themeLabel) themeLabel.textContent = currentTheme === 'dark' ? t('darkMode') : t('lightMode');
+        if (fileBytes) updateFileInfo();
+    }
 
-    <!-- Footer con créditos fijos -->
-    <div class="footer">
-        <span class="badge" id="badgeText">algoritmo oficial SC</span>
-        <span class="credit">✧ creado por: <strong>Samuelsan03</strong></span>
-        <span style="font-size:0.7rem; opacity:0.7;">v1.1</span>
-    </div>
-</div>
+    /* === Tema === */
+    function setTheme(theme) {
+        currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        const icon = document.getElementById('theme-icon');
+        const label = document.querySelector('#theme-btn span');
+        icon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        label.textContent = t(theme === 'dark' ? 'darkMode' : 'lightMode');
+        try { localStorage.setItem('sc2-encryptor-theme', theme); } catch(e) {}
+    }
 
-<script>
-    (function() {
-        // ---------- TRADUCCIONES ----------
-        const LANG = {
-            es: {
-                sub: '🧩 Survivalcraft 2 Mod Encryptor · sin necesidad del juego',
-                info: '⚡ <strong>Rápido y sin dependencias:</strong> arrastra tu <code>.zip</code> o <code>.scmod</code>, encripta y obtén tu mod ofuscado al instante. No necesitas tener el juego instalado.',
-                drop: '📂 Arrastra tu archivo <strong>.scmod</strong> o <strong>.zip</strong> aquí',
-                selectBtn: 'Seleccionar archivo',
-                fileLoaded: '✅ Archivo cargado. Haz clic en "Encriptar y descargar".',
-                encryptBtn: 'Encriptar y descargar',
-                statusEmpty: '💡 Arrastra un archivo o haz clic para seleccionarlo.',
-                wrongExt: '⚠️ El archivo debe tener extensión .scmod o .zip',
-                noFile: '⚠️ No hay archivo cargado.',
-                success: (name) => `✅ Archivo encriptado guardado como "${name}"`,
-                error: (msg) => `❌ Error durante la encriptación: ${msg}`,
-                useNote: '📌 <strong>Uso:</strong> selecciona un archivo <code>.scmod</code> o <code>.zip</code>, haz clic en encriptar y guarda el nuevo archivo ofuscado. El algoritmo es el mismo que usa Survivalcraft 2 para proteger los mods. El archivo de salida se llamará <code>nombre (Encrypted).scmod</code>.',
-                badge: 'algoritmo oficial SC',
-                credit: '✧ creado por:'
-            },
-            en: {
-                sub: '🧩 Survivalcraft 2 Mod Encryptor · no game required',
-                info: '⚡ <strong>Fast & dependency‑free:</strong> drag your <code>.zip</code> or <code>.scmod</code>, encrypt, and get your obfuscated mod instantly. No need to have the game installed.',
-                drop: '📂 Drag your <strong>.scmod</strong> or <strong>.zip</strong> file here',
-                selectBtn: 'Select file',
-                fileLoaded: '✅ File loaded. Click "Encrypt & Download".',
-                encryptBtn: 'Encrypt & Download',
-                statusEmpty: '💡 Drag a file or click to select one.',
-                wrongExt: '⚠️ File must have .scmod or .zip extension',
-                noFile: '⚠️ No file loaded.',
-                success: (name) => `✅ Encrypted file saved as "${name}"`,
-                error: (msg) => `❌ Encryption error: ${msg}`,
-                useNote: '📌 <strong>Usage:</strong> select a <code>.scmod</code> or <code>.zip</code> file, click encrypt, and save the obfuscated file. The algorithm is the same one used by Survivalcraft 2 to protect mods. Output file will be named <code>name (Encrypted).scmod</code>.',
-                badge: 'official SC algorithm',
-                credit: '✧ created by:'
-            },
-            zh: {
-                sub: '🧩 Survivalcraft 2 模组加密器 · 无需游戏本体',
-                info: '⚡ <strong>快速且无依赖：</strong> 拖入您的 <code>.zip</code> 或 <code>.scmod</code> 文件，加密后立即获得混淆后的模组。无需安装游戏。',
-                drop: '📂 将您的 <strong>.scmod</strong> 或 <strong>.zip</strong> 文件拖放到此处',
-                selectBtn: '选择文件',
-                fileLoaded: '✅ 文件已加载。点击“加密并下载”。',
-                encryptBtn: '加密并下载',
-                statusEmpty: '💡 拖放文件或点击选择。',
-                wrongExt: '⚠️ 文件扩展名必须为 .scmod 或 .zip',
-                noFile: '⚠️ 未加载文件。',
-                success: (name) => `✅ 加密文件已保存为 "${name}"`,
-                error: (msg) => `❌ 加密错误: ${msg}`,
-                useNote: '📌 <strong>使用说明：</strong> 选择 <code>.scmod</code> 或 <code>.zip</code> 文件，点击加密并保存混淆后的文件。算法与 Survivalcraft 2 保护模组所用的算法相同。输出文件将命名为 <code>名称 (Encrypted).scmod</code>。',
-                badge: '官方 SC 算法',
-                credit: '✧ 创建者:'
-            },
-            vi: {
-                sub: '🧩 Survivalcraft 2 Mod Encryptor · không cần game',
-                info: '⚡ <strong>Nhanh và không phụ thuộc:</strong> kéo tệp <code>.zip</code> hoặc <code>.scmod</code> của bạn, mã hóa và nhận được tệp mod đã được làm rối ngay lập tức. Không cần cài đặt game.',
-                drop: '📂 Kéo tệp <strong>.scmod</strong> hoặc <strong>.zip</strong> của bạn vào đây',
-                selectBtn: 'Chọn tệp',
-                fileLoaded: '✅ Đã tải tệp. Nhấn "Mã hóa & Tải xuống".',
-                encryptBtn: 'Mã hóa & Tải xuống',
-                statusEmpty: '💡 Kéo tệp hoặc nhấn để chọn.',
-                wrongExt: '⚠️ Tệp phải có phần mở rộng .scmod hoặc .zip',
-                noFile: '⚠️ Chưa có tệp nào được tải.',
-                success: (name) => `✅ Đã lưu tệp mã hóa với tên "${name}"`,
-                error: (msg) => `❌ Lỗi mã hóa: ${msg}`,
-                useNote: '📌 <strong>Cách dùng:</strong> chọn tệp <code>.scmod</code> hoặc <code>.zip</code>, nhấn mã hóa và lưu tệp đã được làm rối. Thuật toán giống với thuật toán Survivalcraft 2 dùng để bảo vệ mod. Tệp đầu ra sẽ có tên <code>tên (Encrypted).scmod</code>.',
-                badge: 'thuật toán chính thức SC',
-                credit: '✧ tạo bởi:'
-            }
+    /* === Lógica de encriptación (traducida del C# de SC2) === */
+
+    function startsWith(data, prefix) {
+        if (data.length < prefix.length) return false;
+        for (let i = 0; i < prefix.length; i++) { if (data[i] !== prefix[i]) return false; }
+        return true;
+    }
+
+    // Detecta si ya está encriptado
+    function checkEncrypted(data) {
+        return startsWith(data, HC1) || startsWith(data, HC2);
+    }
+
+    /**
+     * Encripta usando Método 2 (HeadingCode2 + interleave de bytes)
+     * Equivalente exacto a StrengtheningMod en ModsManager.cs
+     */
+    function encryptMod(data) {
+        const header = HC2;
+        const headerLen = header.length;
+        const dataLen = data.length;
+        const evenCount = Math.floor((dataLen + 1) / 2);
+        const result = new Uint8Array(headerLen + dataLen);
+
+        // Escribir encabezado
+        result.set(header, 0);
+
+        // Bytes en posiciones pares (índice 0, 2, 4, ...) → primera mitad
+        let ei = 0;
+        for (let i = 0; i < dataLen; i++) {
+            if (i % 2 === 0) { result[headerLen + ei] = data[i]; ei++; }
+        }
+
+        // Bytes en posiciones impares (índice 1, 3, 5, ...) → segunda mitad
+        let oi = 0;
+        const oddStart = headerLen + evenCount;
+        for (let i = 0; i < dataLen; i++) {
+            if (i % 2 !== 0) { result[oddStart + oi] = data[i]; oi++; }
+        }
+
+        return result;
+    }
+
+    /* === Utilidades === */
+    function formatSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    /* === Manejo de archivos === */
+    function handleFile(file) {
+        if (!file) return;
+        if (!file.name.toLowerCase().endsWith('.scmod')) {
+            showToast(t('errorInvalidFile'), 'error');
+            return;
+        }
+
+        selectedFile = file;
+        resultBytes = null;
+        resultFileName = null;
+        document.getElementById('download-area').classList.remove('visible');
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            fileBytes = new Uint8Array(e.target.result);
+            isEncrypted = checkEncrypted(fileBytes);
+            updateFileInfo();
+            updateButtons();
+            document.getElementById('drop-zone').classList.add('has-file');
+            document.getElementById('info-panel').classList.add('visible');
+            document.getElementById('btn-reset').style.display = 'flex';
+            showToast(t('fileSelected'), 'info');
         };
+        reader.onerror = function() { showToast(t('errorGeneric'), 'error'); };
+        reader.readAsArrayBuffer(file);
+    }
 
-        // ---------- DOM ----------
-        const langBtns = document.querySelectorAll('.lang-btn');
-        const subText = document.getElementById('subText');
-        const infoBox = document.getElementById('infoBox');
-        const dropText = document.getElementById('dropText');
-        const selectBtn = document.getElementById('select-btn');
-        const fileInput = document.getElementById('file-input');
-        const fileInfo = document.getElementById('file-info');
-        const fileNameSpan = document.getElementById('file-name');
-        const fileSizeSpan = document.getElementById('file-size');
-        const encryptBtn = document.getElementById('encrypt-btn');
-        const statusDiv = document.getElementById('status');
-        const dropArea = document.getElementById('drop-area');
-        const useNote = document.getElementById('useNote');
-        const badgeText = document.getElementById('badgeText');
-        const creditSpan = document.querySelector('.credit');
+    function updateFileInfo() {
+        if (!selectedFile || !fileBytes) return;
+        document.getElementById('info-name').textContent = selectedFile.name;
+        document.getElementById('info-size').textContent = formatSize(fileBytes.length);
 
-        // Estado
-        let currentLang = 'es';
-        let currentFile = null;
-        let currentArrayBuffer = null;
-
-        // Constantes del algoritmo
-        const HEADER_TEXT = "修改他人mod请获得原作者授权，否则小心出名！";
-        const headerBytes = new TextEncoder().encode(HEADER_TEXT);
-
-        // ---------- Funciones de utilidad ----------
-        function formatSize(bytes) {
-            if (bytes === 0) return '0 B';
-            const k = 1024;
-            const units = ['B', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            const val = (bytes / Math.pow(k, i)).toFixed(1);
-            return val + ' ' + units[i];
+        const statusEl = document.getElementById('info-status');
+        isEncrypted = checkEncrypted(fileBytes);
+        if (isEncrypted) {
+            statusEl.innerHTML = '<span class="badge badge-err">' + t('alreadyEncrypted') + '</span>';
+        } else {
+            statusEl.innerHTML = '<span class="badge badge-ok">' + t('ready') + '</span>';
         }
+    }
 
-        // Algoritmo de fortalecimiento (StrengtheningMod)
-        function strengthenMod(originalBytes) {
-            const totalLen = originalBytes.length + headerBytes.length;
-            const result = new Uint8Array(totalLen);
-            result.set(headerBytes, 0);
-            let pos = headerBytes.length;
-            for (let i = 0; i < originalBytes.length; i++) {
-                if (i % 2 === 0) {
-                    result[pos++] = originalBytes[i];
-                }
-            }
-            pos = headerBytes.length + Math.ceil(originalBytes.length / 2);
-            for (let i = 0; i < originalBytes.length; i++) {
-                if (i % 2 !== 0) {
-                    result[pos++] = originalBytes[i];
-                }
-            }
-            return result;
-        }
+    function updateButtons() {
+        document.getElementById('btn-encrypt').disabled = !fileBytes || isEncrypted;
+    }
 
-        // ---------- Traducción dinámica ----------
-        function updateLanguage(lang) {
-            const t = LANG[lang];
-            if (!t) return;
-            subText.innerHTML = t.sub;
-            infoBox.innerHTML = t.info;
-            dropText.innerHTML = t.drop;
-            selectBtn.textContent = t.selectBtn;
-            encryptBtn.textContent = t.encryptBtn;
-            useNote.innerHTML = t.useNote;
-            badgeText.textContent = t.badge;
-            // Actualizar el crédito manteniendo el nombre fijo
-            creditSpan.innerHTML = t.credit + ' <strong>Samuelsan03</strong>';
-            // Actualizar estado si no hay archivo cargado
-            if (!currentFile) {
-                statusDiv.textContent = t.statusEmpty;
-                statusDiv.style.color = '#64748b';
-            } else {
-                statusDiv.textContent = t.fileLoaded;
-                statusDiv.style.color = '#15803d';
-            }
-            // Botones de idioma activo
-            langBtns.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.lang === lang);
-            });
-            currentLang = lang;
-        }
+    function processEncrypt() {
+        if (!fileBytes || isEncrypted) return;
 
-        // ---------- Manejo de archivo ----------
-        function handleFile(file) {
-            if (!file) {
-                resetUI();
-                return;
-            }
-            const ext = file.name.split('.').pop().toLowerCase();
-            if (ext !== 'scmod' && ext !== 'zip') {
-                const t = LANG[currentLang];
-                statusDiv.textContent = t.wrongExt;
-                statusDiv.style.color = '#b45309';
-                resetUI();
-                return;
-            }
-            currentFile = file;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentArrayBuffer = e.target.result;
-                fileInfo.style.display = 'flex';
-                fileNameSpan.textContent = file.name;
-                fileSizeSpan.textContent = formatSize(file.size);
-                encryptBtn.disabled = false;
-                const t = LANG[currentLang];
-                statusDiv.textContent = t.fileLoaded;
-                statusDiv.style.color = '#15803d';
-            };
-            reader.onerror = function() {
-                const t = LANG[currentLang];
-                statusDiv.textContent = t.error('Error al leer el archivo');
-                statusDiv.style.color = '#dc2626';
-                resetUI();
-            };
-            reader.readAsArrayBuffer(file);
-        }
+        const btn = document.getElementById('btn-encrypt');
+        btn.classList.add('loading');
+        btn.disabled = true;
 
-        function resetUI() {
-            currentFile = null;
-            currentArrayBuffer = null;
-            fileInfo.style.display = 'none';
-            encryptBtn.disabled = true;
-            const t = LANG[currentLang];
-            statusDiv.textContent = t.statusEmpty;
-            statusDiv.style.color = '#64748b';
-        }
-
-        // ---------- Eventos de idioma ----------
-        langBtns.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                const lang = this.dataset.lang;
-                if (lang === currentLang) return;
-                updateLanguage(lang);
-            });
-        });
-
-        // ---------- Drag & drop ----------
-        dropArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropArea.classList.add('dragover');
-        });
-        dropArea.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            dropArea.classList.remove('dragover');
-        });
-        dropArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        });
-        dropArea.addEventListener('click', (e) => {
-            if (e.target === selectBtn) return;
-            fileInput.click();
-        });
-        selectBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            fileInput.click();
-        });
-        fileInput.addEventListener('change', (e) => {
-            if (fileInput.files.length > 0) {
-                handleFile(fileInput.files[0]);
-            } else {
-                resetUI();
-            }
-            fileInput.value = '';
-        });
-
-        // ---------- Botón encriptar ----------
-        encryptBtn.addEventListener('click', () => {
-            if (!currentArrayBuffer) {
-                const t = LANG[currentLang];
-                statusDiv.textContent = t.noFile;
-                statusDiv.style.color = '#b45309';
-                return;
-            }
+        setTimeout(() => {
             try {
-                const original = new Uint8Array(currentArrayBuffer);
-                const encrypted = strengthenMod(original);
-                const blob = new Blob([encrypted], { type: 'application/octet-stream' });
-                // Nombre de salida: baseName (Encrypted).scmod
-                const baseName = currentFile.name.replace(/\.[^.]+$/, '');
-                const outName = baseName + ' (Encrypted).scmod';
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = outName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                setTimeout(() => URL.revokeObjectURL(url), 2000);
-                const t = LANG[currentLang];
-                statusDiv.textContent = t.success(outName);
-                statusDiv.style.color = '#15803d';
-            } catch (err) {
-                const t = LANG[currentLang];
-                statusDiv.textContent = t.error(err.message);
-                statusDiv.style.color = '#dc2626';
-                console.error(err);
+                resultBytes = encryptMod(fileBytes);
+                const baseName = selectedFile.name.replace(/\.scmod$/i, '');
+                resultFileName = baseName + '(encrypted).scmod';
+                document.getElementById('download-area').classList.add('visible');
+                showToast(t('successEncrypt'), 'success');
+            } catch (e) {
+                showToast(t('errorGeneric') + ': ' + e.message, 'error');
             }
+            btn.classList.remove('loading');
+            updateButtons();
+        }, 150);
+    }
+
+    function downloadResult() {
+        if (!resultBytes || !resultFileName) return;
+        const blob = new Blob([resultBytes], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = resultFileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function resetAll() {
+        selectedFile = null;
+        fileBytes = null;
+        resultBytes = null;
+        resultFileName = null;
+        isEncrypted = false;
+        document.getElementById('file-input').value = '';
+        document.getElementById('drop-zone').classList.remove('has-file');
+        document.getElementById('info-panel').classList.remove('visible');
+        document.getElementById('download-area').classList.remove('visible');
+        document.getElementById('btn-reset').style.display = 'none';
+        updateButtons();
+    }
+
+    /* === Toasts === */
+    function showToast(message, type) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast toast-' + (type || 'info');
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
+        toast.innerHTML = '<i class="fa-solid ' + (icons[type] || icons.info) + ' toast-icon"></i><span>' + message + '</span>';
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('toast-out');
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
+    /* === Partículas (brasas) === */
+    const particles = [];
+    const P_COUNT = 35;
+    let pCanvas, pCtx, reducedMotion = false;
+
+    function initParticles() {
+        reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reducedMotion) return;
+        pCanvas = document.getElementById('particles-canvas');
+        pCtx = pCanvas.getContext('2d');
+        resizePCanvas();
+        window.addEventListener('resize', resizePCanvas);
+        for (let i = 0; i < P_COUNT; i++) particles.push(createP(true));
+        animateP();
+    }
+
+    function resizePCanvas() { if (pCanvas) { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; } }
+
+    function createP(randomY) {
+        const s = getComputedStyle(document.documentElement);
+        const bR = parseInt(s.getPropertyValue('--particle-base')) || 232;
+        const bG = parseInt(s.getPropertyValue('--particle-green')) || 140;
+        const bB = parseInt(s.getPropertyValue('--particle-blue')) || 30;
+        return {
+            x: Math.random() * window.innerWidth,
+            y: randomY ? Math.random() * window.innerHeight : window.innerHeight + 10,
+            size: Math.max(1.5, Math.random() * 3.5 + 1),
+            sy: -(Math.random() * 0.6 + 0.2),
+            sx: (Math.random() - 0.5) * 0.3,
+            wa: Math.random() * 0.8 + 0.2,
+            ws: Math.random() * 0.02 + 0.005,
+            wo: Math.random() * Math.PI * 2,
+            op: Math.random() * 0.5 + 0.3,
+            life: randomY ? Math.random() : 0,
+            ml: Math.random() * 400 + 200,
+            r: Math.min(255, bR + Math.floor(Math.random() * 40 - 20)),
+            g: Math.min(255, Math.max(0, bG + Math.floor(Math.random() * 60 - 30))),
+            b: Math.min(255, Math.max(0, bB + Math.floor(Math.random() * 20 - 10)))
+        };
+    }
+
+    function animateP() {
+        if (reducedMotion) return;
+        pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            p.life++;
+            p.y += p.sy;
+            p.x += p.sx + Math.sin(p.life * p.ws + p.wo) * p.wa * 0.3;
+            const lr = p.life / p.ml;
+            let a = p.op;
+            if (lr < 0.1) a *= lr / 0.1;
+            else if (lr > 0.7) a *= (1 - lr) / 0.3;
+            a = Math.max(0, Math.min(1, a));
+            pCtx.fillStyle = 'rgba(' + p.r + ',' + p.g + ',' + p.b + ',' + a + ')';
+            const sz = Math.max(1, p.size);
+            pCtx.fillRect(Math.round(p.x), Math.round(p.y), sz, sz);
+            if (p.y < -10 || p.life > p.ml) {
+                particles[i] = createP(false);
+                particles[i].x = Math.random() * window.innerWidth;
+            }
+        }
+        requestAnimationFrame(animateP);
+    }
+
+    /* === Init === */
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tema guardado
+        try {
+            const st = localStorage.getItem('sc2-encryptor-theme');
+            setTheme(st || 'dark');
+        } catch(e) { setTheme('dark'); }
+
+        // Idioma guardado
+        try {
+            const sl = localStorage.getItem('sc2-encryptor-lang');
+            if (sl && LANG[sl]) {
+                currentLang = sl;
+                document.getElementById('lang-select').value = sl;
+            }
+            applyLang(currentLang);
+        } catch(e) { applyLang('es'); }
+
+        // Eventos
+        document.getElementById('theme-btn').addEventListener('click', function() { setTheme(currentTheme === 'dark' ? 'light' : 'dark'); });
+        document.getElementById('lang-select').addEventListener('change', function() {
+            applyLang(this.value);
+            try { localStorage.setItem('sc2-encryptor-lang', this.value); } catch(e) {}
         });
 
-        // ---------- Inicializar en español ----------
-        updateLanguage('es');
-    })();
-</script>
+        var dropZone = document.getElementById('drop-zone');
+        var fileInput = document.getElementById('file-input');
+
+        dropZone.addEventListener('click', function() { fileInput.click(); });
+        dropZone.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+        });
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+        dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', function(e) { e.preventDefault(); dropZone.classList.remove('drag-over'); });
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault(); dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+        });
+
+        document.getElementById('btn-encrypt').addEventListener('click', processEncrypt);
+        document.getElementById('btn-download').addEventListener('click', downloadResult);
+        document.getElementById('btn-reset').addEventListener('click', resetAll);
+
+        initParticles();
+    });
+    </script>
 </body>
 </html>
