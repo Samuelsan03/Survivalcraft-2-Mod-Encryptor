@@ -5,7 +5,7 @@
   <StackPanelWidget Direction="Horizontal">
 
     <CanvasWidget Style="{Widgets/TopBarContents}">
-      <LabelWidget Name="TopBar.Label" Text="Mod Encryptor" />
+      <LabelWidget Name="TopBar.Label" Text="[EncryptorScreen:1]" />
     </CanvasWidget>
 
     <StackPanelWidget Direction="Vertical" VerticalAlignment="Center">
@@ -16,7 +16,7 @@
         <CanvasWidget Size="10, 0"/>
         <LabelWidget Name="PathLabel" Text="Mods" VerticalAlignment="Center" Color="200, 200, 50"/>
         <CanvasWidget Size="Infinity, 0"/>
-        <LabelWidget Name="InfoLabel" Text="Select .scmod to encrypt" VerticalAlignment="Center" Color="128, 128, 128"/>
+        <LabelWidget Name="InfoLabel" Text="[EncryptorScreen:2]" VerticalAlignment="Center" Color="128, 128, 128"/>
       </StackPanelWidget>
 
       <CanvasWidget Size="0, 8"/>
@@ -31,7 +31,7 @@
       <StackPanelWidget Direction="Horizontal" Margin="10, 0">
         <BevelledButtonWidget Name="UpDirectory" Style="{Styles/ButtonStyle_UpDirectory}"/>
         <CanvasWidget Size="10, 0"/>
-        <BevelledButtonWidget Name="EncryptButton" Style="{Styles/ButtonStyle_310x60}" Text="Encrypt" IsEnabled="false"/>
+        <BevelledButtonWidget Name="EncryptButton" Style="{Styles/ButtonStyle_310x60}" Text="[EncryptorScreen:9]" IsEnabled="false"/>
         <CanvasWidget Size="Infinity, 0"/>
       </StackPanelWidget>
 
