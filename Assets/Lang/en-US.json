@@ -1,17 +1,16 @@
 {
-  "Encryptor": {
-    "Button": "Encrypt Mod",
-    "SelectTitle": "Select Mod to Encrypt",
-    "ErrorTitle": "Error",
-    "InfoTitle": "Information",
-    "SuccessTitle": "Success",
-    "UnknownMod": "Unknown mod",
-    "FileNotFound": "The mod file does not exist.",
-    "InvalidExtension": "The file is not a valid mod. It must have the .scmod extension.",
-    "AlreadyEncrypted": "The mod is already encrypted. There is no need to encrypt it again.",
-    "SuccessMessage": "The mod has been encrypted successfully.\nFile saved to: {0}",
-    "ErrorMessage": "An error occurred while encrypting the mod:\n{0}",
-    "LogSuccess": "Mod \"{0}\" encrypted successfully at: {1}",
-    "LogError": "Error encrypting mod: {0}"
+  "EncryptorScreen": {
+    "1": "Mod Encryptor",
+    "2": "Select .scmod to encrypt",
+    "3": "No .scmod files found",
+    "4": "Directory not found",
+    "5": "Access denied",
+    "6": "This mod is already encrypted.",
+    "7": "Mod encrypted successfully!\n\nOutput: {0}",
+    "8": "Encryption failed:\n{0}",
+    "9": "Encrypt"
+  },
+  "EncryptorMODSModLoader": {
+    "1": "Mod Encryptor"
   }
 }
