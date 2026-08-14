@@ -1,0 +1,349 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Xml.Linq;
+using Engine;
+using Engine.Graphics;
+using Game;
+
+namespace Encryptor
+{
+	public class EncryptorScreen : Screen
+	{
+		private static readonly string HeadingCode2 = "修改他人mod请获得原作者授权，否则小心出名！";
+		private static readonly string EncryptedModsFolder = ModsManager.ExternalPath + "/EncryptedMods";
+
+		private ListPanelWidget m_directoryList;
+		private LabelWidget m_pathLabel;
+		private LabelWidget m_infoLabel;
+		private ButtonWidget m_upDirectoryButton;
+		private ButtonWidget m_encryptButton;
+		private string m_path;
+		private string m_modsPathSystem;
+		private bool m_listDirty;
+
+		public EncryptorScreen()
+		{
+			XElement node = ContentManager.Get<XElement>("Screens/EncryptorScreen");
+			LoadContents(this, node);
+
+			m_pathLabel = Children.Find<LabelWidget>("PathLabel", true);
+			m_infoLabel = Children.Find<LabelWidget>("InfoLabel", true);
+			m_directoryList = Children.Find<ListPanelWidget>("DirectoryList", true);
+			m_upDirectoryButton = Children.Find<ButtonWidget>("UpDirectory", true);
+			m_encryptButton = Children.Find<ButtonWidget>("EncryptButton", true);
+
+			m_directoryList.ItemWidgetFactory = delegate (object item)
+			{
+				FileEntry entry = (FileEntry)item;
+
+				XElement itemNode = ContentManager.Get<XElement>("Widgets/EncryptorItem");
+				StackPanelWidget container = (StackPanelWidget)Widget.LoadWidget(this, itemNode, null);
+
+				RectangleWidget icon = container.Children.Find<RectangleWidget>("EncryptorItem.Icon", true);
+				LabelWidget textLabel = container.Children.Find<LabelWidget>("EncryptorItem.Text", true);
+				LabelWidget detailsLabel = container.Children.Find<LabelWidget>("EncryptorItem.Details", true);
+
+				if (entry.IsDirectory)
+				{
+					icon.Subtexture = TextureAtlasManager.GetSubtexture("Textures/Atlas/FolderIcon");
+				}
+				else
+				{
+					Texture2D modIconTexture = ContentManager.Get<Texture2D>("Textures/Gui/DefaultModIcon");
+					icon.Subtexture = new Subtexture(modIconTexture);
+				}
+
+				textLabel.Text = entry.DisplayName;
+				detailsLabel.Text = entry.IsDirectory ? string.Empty : DataSizeFormatter.Format(entry.Size, 3);
+
+				return container;
+			};
+
+			m_directoryList.ItemClicked += delegate (object item)
+			{
+				FileEntry entry = item as FileEntry;
+				if (entry == null) return;
+
+				if (m_directoryList.SelectedItem == entry && entry.IsDirectory)
+				{
+					SetPath(entry.FullPath);
+				}
+			};
+		}
+
+		public override void Enter(object[] parameters)
+		{
+			m_modsPathSystem = null;
+			SetPath(null);
+			m_listDirty = true;
+		}
+
+		public override void Update()
+		{
+			if (m_listDirty)
+			{
+				m_listDirty = false;
+				UpdateList();
+			}
+
+			// Cache the system path for Mods folder (like original uses ModsManager.ModsPath for comparison)
+			if (m_modsPathSystem == null)
+			{
+				m_modsPathSystem = Storage.ProcessPath(ModsManager.ModsPath, false, false).Replace('\\', '/');
+			}
+
+			// Display path - show "Mods/..." when inside Mods folder, full path otherwise (like original)
+			string displayPath = m_path;
+			if (m_path.StartsWith(m_modsPathSystem, StringComparison.OrdinalIgnoreCase))
+			{
+				displayPath = "Mods" + m_path.Substring(m_modsPathSystem.Length);
+			}
+			m_pathLabel.Text = displayPath;
+
+			FileEntry selectedEntry = null;
+			if (m_directoryList.SelectedIndex != null)
+			{
+				selectedEntry = m_directoryList.Items[m_directoryList.SelectedIndex.Value] as FileEntry;
+			}
+
+			m_encryptButton.IsEnabled = selectedEntry != null && selectedEntry.IsScmod;
+
+			m_upDirectoryButton.IsEnabled = !(m_path.Length == 2 && m_path[1] == ':');
+
+			if (m_upDirectoryButton.IsClicked)
+			{
+				string parentPath = GetParentPath(m_path);
+				if (!string.IsNullOrEmpty(parentPath))
+				{
+					SetPath(parentPath);
+				}
+			}
+
+			if (m_encryptButton.IsClicked && selectedEntry != null && selectedEntry.IsScmod)
+			{
+				EncryptFile(selectedEntry.FullPath);
+			}
+
+			if (Input.Back || Input.Cancel || Children.Find<ButtonWidget>("TopBar.Back", true).IsClicked)
+			{
+				ScreensManager.SwitchScreen("Settings", Array.Empty<object>());
+			}
+		}
+
+		private void SetPath(string path)
+		{
+			if (string.IsNullOrEmpty(path))
+			{
+				// Start in Mods folder like original, but convert to system path for navigation
+				path = Storage.ProcessPath(ModsManager.ModsPath, false, false);
+			}
+			path = path.Replace('\\', '/');
+			if (path.Length > 1 && path.EndsWith("/"))
+			{
+				path = path.Substring(0, path.Length - 1);
+			}
+			if (path != m_path)
+			{
+				m_path = path;
+				m_listDirty = true;
+			}
+		}
+
+		private string GetParentPath(string path)
+		{
+			if (string.IsNullOrEmpty(path))
+				return null;
+
+			if (path.Length == 2 && path[1] == ':')
+				return null;
+
+			try
+			{
+				string searchPath = path;
+				if (path.Length == 2 && path[1] == ':')
+				{
+					searchPath = path + "/";
+				}
+
+				DirectoryInfo parentDir = Directory.GetParent(searchPath);
+				if (parentDir != null)
+				{
+					return parentDir.FullName.Replace('\\', '/');
+				}
+			}
+			catch { }
+
+			return null;
+		}
+
+		private void UpdateList()
+		{
+			m_directoryList.ClearItems();
+
+			try
+			{
+				string searchPath = m_path;
+
+				if (m_path.Length == 2 && m_path[1] == ':')
+				{
+					searchPath = m_path + "/";
+				}
+
+				if (!Directory.Exists(searchPath))
+				{
+					m_infoLabel.Text = "Directory not found";
+					return;
+				}
+
+				List<string> directories = new List<string>(Directory.GetDirectories(searchPath));
+				directories.Sort(StringComparer.OrdinalIgnoreCase);
+
+				foreach (string dir in directories)
+				{
+					string dirName = Path.GetFileName(dir);
+					string normalizedPath = dir.Replace('\\', '/');
+
+					m_directoryList.AddItem(new FileEntry
+					{
+						Name = dirName,
+						DisplayName = dirName + "/",
+						FullPath = normalizedPath,
+						IsDirectory = true,
+						IsScmod = false,
+						Size = 0
+					});
+				}
+
+				List<string> files = new List<string>();
+				foreach (string file in Directory.GetFiles(searchPath))
+				{
+					if (Path.GetExtension(file).ToLowerInvariant() == ".scmod")
+					{
+						files.Add(file);
+					}
+				}
+				files.Sort(StringComparer.OrdinalIgnoreCase);
+
+				foreach (string file in files)
+				{
+					FileInfo fileInfo = new FileInfo(file);
+					string fileName = Path.GetFileName(file);
+					string normalizedPath = file.Replace('\\', '/');
+
+					m_directoryList.AddItem(new FileEntry
+					{
+						Name = fileName,
+						DisplayName = fileName,
+						FullPath = normalizedPath,
+						IsDirectory = false,
+						IsScmod = true,
+						Size = fileInfo.Length
+					});
+				}
+
+				m_infoLabel.Text = m_directoryList.Items.Count == 0
+					? "No .scmod files found"
+					: "Select .scmod to encrypt";
+			}
+			catch (UnauthorizedAccessException)
+			{
+				m_infoLabel.Text = "Access denied";
+			}
+			catch (Exception ex)
+			{
+				DialogsManager.ShowDialog(null, new MessageDialog("Error", ex.Message, "OK", null, null));
+			}
+		}
+
+		private void EncryptFile(string filePath)
+		{
+			try
+			{
+				byte[] originalData;
+				using (FileStream srcStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+				{
+					originalData = new byte[srcStream.Length];
+					srcStream.ReadExactly(originalData);
+				}
+
+				byte[] headerBytes = Encoding.UTF8.GetBytes(HeadingCode2);
+				bool hasHeader = true;
+				for (int i = 0; i < headerBytes.Length; i++)
+				{
+					if (i >= originalData.Length || originalData[i] != headerBytes[i])
+					{
+						hasHeader = false;
+						break;
+					}
+				}
+
+				if (hasHeader)
+				{
+					DialogsManager.ShowDialog(null, new MessageDialog(
+						"Info",
+						"This mod is already encrypted.",
+						"OK", null, null));
+					return;
+				}
+
+				if (!Storage.DirectoryExists(EncryptedModsFolder))
+				{
+					Storage.CreateDirectory(EncryptedModsFolder);
+				}
+
+				string fileName = Path.GetFileName(filePath);
+				string baseName = Path.GetFileNameWithoutExtension(fileName);
+				string newFileName = $"{baseName} (Encrypted).scmod";
+				string destPath = Storage.CombinePaths(EncryptedModsFolder, newFileName);
+
+				int counter = 1;
+				while (Storage.FileExists(destPath))
+				{
+					newFileName = $"{baseName} (Encrypted)({counter}).scmod";
+					destPath = Storage.CombinePaths(EncryptedModsFolder, newFileName);
+					counter++;
+				}
+
+				byte[] encryptedData = new byte[originalData.Length + headerBytes.Length];
+				Array.Copy(headerBytes, 0, encryptedData, 0, headerBytes.Length);
+				int destIndex = headerBytes.Length;
+
+				for (int i = 0; i < originalData.Length; i += 2)
+					encryptedData[destIndex++] = originalData[i];
+				for (int i = 1; i < originalData.Length; i += 2)
+					encryptedData[destIndex++] = originalData[i];
+
+				string destSystemPath = Storage.GetSystemPath(destPath);
+				using (FileStream destStream = new FileStream(destSystemPath, FileMode.Create, FileAccess.Write, FileShare.None))
+					destStream.Write(encryptedData, 0, encryptedData.Length);
+
+				DialogsManager.ShowDialog(null, new MessageDialog(
+					"Success",
+					$"Mod encrypted successfully!\n\nOutput: {destPath}",
+					"OK", null, null));
+
+				Log.Information($"Mod encrypted: {baseName} -> {destPath}");
+			}
+			catch (Exception ex)
+			{
+				DialogsManager.ShowDialog(null, new MessageDialog(
+					"Error",
+					$"Encryption failed:\n{ex.Message}",
+					"OK", null, null));
+				Log.Error($"Encryption error: {ex}");
+			}
+		}
+
+		private class FileEntry
+		{
+			public string Name;
+			public string DisplayName;
+			public string FullPath;
+			public bool IsDirectory;
+			public bool IsScmod;
+			public long Size;
+		}
+	}
+}
