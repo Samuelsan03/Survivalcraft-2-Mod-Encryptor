@@ -1,17 +1,16 @@
 {
-  "Encryptor": {
-    "Button": "Encriptar Mod",
-    "SelectTitle": "Seleccionar Mod a Encriptar",
-    "ErrorTitle": "Error",
-    "InfoTitle": "Información",
-    "SuccessTitle": "Éxito",
-    "UnknownMod": "Mod desconocido",
-    "FileNotFound": "El archivo del mod no existe.",
-    "InvalidExtension": "El archivo no es un mod válido. Debe tener extensión .scmod",
-    "AlreadyEncrypted": "El mod ya está encriptado. No es necesario volver a encriptarlo.",
-    "SuccessMessage": "El mod se ha encriptado correctamente.\nArchivo guardado en: {0}",
-    "ErrorMessage": "Ocurrió un error al encriptar el mod:\n{0}",
-    "LogSuccess": "Mod \"{0}\" encriptado correctamente en: {1}",
-    "LogError": "Error al encriptar mod: {0}"
+  "EncryptorScreen": {
+    "1": "Encriptador de mods",
+    "2": "Selecciona un archivo .scmod para encriptar",
+    "3": "No se encontraron archivos .scmod",
+    "4": "Directorio no encontrado",
+    "5": "Acceso denegado",
+    "6": "Este mod ya está encriptado.",
+    "7": "¡Mod encriptado correctamente!\n\nSalida: {0}",
+    "8": "Error al encriptar:\n{0}",
+    "9": "Encriptar"
+  },
+  "EncryptorMODSModLoader": {
+    "1": "Encriptador de mods"
   }
 }
