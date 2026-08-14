@@ -14,6 +14,7 @@ namespace Encryptor
 		private static readonly string HeadingCode2 = "修改他人mod请获得原作者授权，否则小心出名！";
 		private static readonly string EncryptedModsFolder = ModsManager.ExternalPath + "/EncryptedMods";
 
+		private LabelWidget m_directoryLabel;
 		private ListPanelWidget m_directoryList;
 		private LabelWidget m_pathLabel;
 		private LabelWidget m_infoLabel;
@@ -28,6 +29,7 @@ namespace Encryptor
 			XElement node = ContentManager.Get<XElement>("Screens/EncryptorScreen");
 			LoadContents(this, node);
 
+			m_directoryLabel = Children.Find<LabelWidget>("TopBar.Label", true);
 			m_pathLabel = Children.Find<LabelWidget>("PathLabel", true);
 			m_infoLabel = Children.Find<LabelWidget>("InfoLabel", true);
 			m_directoryList = Children.Find<ListPanelWidget>("DirectoryList", true);
@@ -88,13 +90,14 @@ namespace Encryptor
 				UpdateList();
 			}
 
-			// Cache the system path for Mods folder (like original uses ModsManager.ModsPath for comparison)
+			m_directoryLabel.Text = LanguageControl.Get("EncryptorScreen", 1);
+			m_encryptButton.Text = LanguageControl.Get("EncryptorScreen", 9);
+
 			if (m_modsPathSystem == null)
 			{
 				m_modsPathSystem = Storage.ProcessPath(ModsManager.ModsPath, false, false).Replace('\\', '/');
 			}
 
-			// Display path - show "Mods/..." when inside Mods folder, full path otherwise (like original)
 			string displayPath = m_path;
 			if (m_path.StartsWith(m_modsPathSystem, StringComparison.OrdinalIgnoreCase))
 			{
@@ -136,7 +139,6 @@ namespace Encryptor
 		{
 			if (string.IsNullOrEmpty(path))
 			{
-				// Start in Mods folder like original, but convert to system path for navigation
 				path = Storage.ProcessPath(ModsManager.ModsPath, false, false);
 			}
 			path = path.Replace('\\', '/');
@@ -193,7 +195,7 @@ namespace Encryptor
 
 				if (!Directory.Exists(searchPath))
 				{
-					m_infoLabel.Text = "Directory not found";
+					m_infoLabel.Text = LanguageControl.Get("EncryptorScreen", 4);
 					return;
 				}
 
@@ -244,16 +246,16 @@ namespace Encryptor
 				}
 
 				m_infoLabel.Text = m_directoryList.Items.Count == 0
-					? "No .scmod files found"
-					: "Select .scmod to encrypt";
+					? LanguageControl.Get("EncryptorScreen", 3)
+					: LanguageControl.Get("EncryptorScreen", 2);
 			}
 			catch (UnauthorizedAccessException)
 			{
-				m_infoLabel.Text = "Access denied";
+				m_infoLabel.Text = LanguageControl.Get("EncryptorScreen", 5);
 			}
 			catch (Exception ex)
 			{
-				DialogsManager.ShowDialog(null, new MessageDialog("Error", ex.Message, "OK", null, null));
+				DialogsManager.ShowDialog(null, new MessageDialog(LanguageControl.Error, ex.Message, LanguageControl.Ok, null, null));
 			}
 		}
 
@@ -282,9 +284,9 @@ namespace Encryptor
 				if (hasHeader)
 				{
 					DialogsManager.ShowDialog(null, new MessageDialog(
-						"Info",
-						"This mod is already encrypted.",
-						"OK", null, null));
+						LanguageControl.Get("Usual", "warning"),
+						LanguageControl.Get("EncryptorScreen", 6),
+						LanguageControl.Ok, null, null));
 					return;
 				}
 
@@ -320,18 +322,18 @@ namespace Encryptor
 					destStream.Write(encryptedData, 0, encryptedData.Length);
 
 				DialogsManager.ShowDialog(null, new MessageDialog(
-					"Success",
-					$"Mod encrypted successfully!\n\nOutput: {destPath}",
-					"OK", null, null));
+					LanguageControl.Success,
+					string.Format(LanguageControl.Get("EncryptorScreen", 7), destPath),
+					LanguageControl.Ok, null, null));
 
 				Log.Information($"Mod encrypted: {baseName} -> {destPath}");
 			}
 			catch (Exception ex)
 			{
 				DialogsManager.ShowDialog(null, new MessageDialog(
-					"Error",
-					$"Encryption failed:\n{ex.Message}",
-					"OK", null, null));
+					LanguageControl.Error,
+					string.Format(LanguageControl.Get("EncryptorScreen", 8), ex.Message),
+					LanguageControl.Ok, null, null));
 				Log.Error($"Encryption error: {ex}");
 			}
 		}
