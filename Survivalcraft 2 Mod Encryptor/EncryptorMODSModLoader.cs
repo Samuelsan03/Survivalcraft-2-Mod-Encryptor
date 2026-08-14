@@ -17,7 +17,7 @@ namespace Encryptor
 		{
 			ButtonWidget encryptButton = new BevelledButtonWidget
 			{
-				Text = "Mod Encryptor",
+				Text = LanguageControl.Get("EncryptorMODSModLoader", 1),
 				Style = ContentManager.Get<XElement>("Styles/ButtonStyle_310x60"),
 				HorizontalAlignment = WidgetAlignment.Center,
 				VerticalAlignment = WidgetAlignment.Center,
@@ -26,7 +26,6 @@ namespace Encryptor
 
 			Action onClick = () =>
 			{
-				// Pass screen instance directly instead of string name
 				ScreensManager.SwitchScreen(new EncryptorScreen(), Array.Empty<object>());
 			};
 
