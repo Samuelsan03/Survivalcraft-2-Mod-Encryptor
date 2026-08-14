@@ -1,17 +1,16 @@
 {
-  "Encryptor": {
-    "Button": "加密 Mod",
-    "SelectTitle": "选择要加密的 Mod",
-    "ErrorTitle": "错误",
-    "InfoTitle": "信息",
-    "SuccessTitle": "成功",
-    "UnknownMod": "未知 Mod",
-    "FileNotFound": "Mod 文件不存在。",
-    "InvalidExtension": "该文件不是有效的 Mod，必须使用 .scmod 扩展名。",
-    "AlreadyEncrypted": "该 Mod 已加密，无需再次加密。",
-    "SuccessMessage": "Mod 已成功加密。\n文件已保存至：{0}",
-    "ErrorMessage": "加密 Mod 时发生错误：\n{0}",
-    "LogSuccess": "Mod \"{0}\" 已成功加密，保存位置：{1}",
-    "LogError": "加密 Mod 时出错：{0}"
+  "EncryptorScreen": {
+    "1": "Mod 加密器",
+    "2": "选择要加密的 .scmod 文件",
+    "3": "未找到 .scmod 文件",
+    "4": "未找到目录",
+    "5": "拒绝访问",
+    "6": "此 Mod 已经加密。",
+    "7": "Mod 加密成功！\n\n输出：{0}",
+    "8": "加密失败：\n{0}",
+    "9": "加密"
+  },
+  "EncryptorMODSModLoader": {
+    "1": "Mod 加密器"
   }
 }
