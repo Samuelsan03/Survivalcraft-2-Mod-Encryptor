@@ -1,8 +1,8 @@
 {
   "EncryptorScreen": {
     "1": "Mod Encryptor",
-    "2": "Select .scmod to encrypt",
-    "3": "No .scmod files found",
+    "2": "Select .scmod or .netmod to encrypt",
+    "3": "No .scmod or .netmod files found",
     "4": "Directory not found",
     "5": "Access denied",
     "6": "This mod is already encrypted.",
