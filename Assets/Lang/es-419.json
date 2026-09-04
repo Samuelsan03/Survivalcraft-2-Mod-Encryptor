@@ -1,16 +1,16 @@
 {
   "EncryptorScreen": {
-    "1": "Encriptador de mods",
-    "2": "Selecciona un archivo .scmod para encriptar",
-    "3": "No se encontraron archivos .scmod",
+    "1": "Cifrador de Mods",
+    "2": "Selecciona un .scmod o .netmod para cifrar",
+    "3": "No se encontraron archivos .scmod o .netmod",
     "4": "Directorio no encontrado",
     "5": "Acceso denegado",
-    "6": "Este mod ya está encriptado.",
-    "7": "¡Mod encriptado correctamente!\n\nSalida: {0}",
-    "8": "Error al encriptar:\n{0}",
-    "9": "Encriptar"
+    "6": "Este mod ya está cifrado.",
+    "7": "¡Mod cifrado correctamente!\n\nSalida: {0}",
+    "8": "Error al cifrar:\n{0}",
+    "9": "Cifrar"
   },
   "EncryptorMODSModLoader": {
-    "1": "Encriptador de mods"
+    "1": "Cifrador de Mods"
   }
 }
