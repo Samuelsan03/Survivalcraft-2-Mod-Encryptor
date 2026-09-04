@@ -111,7 +111,8 @@ namespace Encryptor
 				selectedEntry = m_directoryList.Items[m_directoryList.SelectedIndex.Value] as FileEntry;
 			}
 
-			m_encryptButton.IsEnabled = selectedEntry != null && selectedEntry.IsScmod;
+			// Actualizado: Se verifica IsModFile en lugar de IsScmod
+			m_encryptButton.IsEnabled = selectedEntry != null && selectedEntry.IsModFile;
 
 			m_upDirectoryButton.IsEnabled = !(m_path.Length == 2 && m_path[1] == ':');
 
@@ -124,7 +125,8 @@ namespace Encryptor
 				}
 			}
 
-			if (m_encryptButton.IsClicked && selectedEntry != null && selectedEntry.IsScmod)
+			// Actualizado: Verifica IsModFile
+			if (m_encryptButton.IsClicked && selectedEntry != null && selectedEntry.IsModFile)
 			{
 				EncryptFile(selectedEntry.FullPath);
 			}
@@ -213,7 +215,7 @@ namespace Encryptor
 						DisplayName = dirName + "/",
 						FullPath = normalizedPath,
 						IsDirectory = true,
-						IsScmod = false,
+						IsModFile = false,
 						Size = 0
 					});
 				}
@@ -221,7 +223,9 @@ namespace Encryptor
 				List<string> files = new List<string>();
 				foreach (string file in Directory.GetFiles(searchPath))
 				{
-					if (Path.GetExtension(file).ToLowerInvariant() == ".scmod")
+					// CAMBIO PRINCIPAL: Ahora acepta .scmod y .netmod
+					string ext = Path.GetExtension(file).ToLowerInvariant();
+					if (ext == ".scmod" || ext == ".netmod")
 					{
 						files.Add(file);
 					}
@@ -240,7 +244,7 @@ namespace Encryptor
 						DisplayName = fileName,
 						FullPath = normalizedPath,
 						IsDirectory = false,
-						IsScmod = true,
+						IsModFile = true, // Marcamos como archivo válido para encriptar
 						Size = fileInfo.Length
 					});
 				}
@@ -297,23 +301,31 @@ namespace Encryptor
 
 				string fileName = Path.GetFileName(filePath);
 				string baseName = Path.GetFileNameWithoutExtension(fileName);
-				string newFileName = $"{baseName} (Encrypted).scmod";
+
+				// CAMBIO PRINCIPAL: Obtener la extensión original (.scmod o .netmod)
+				string originalExtension = Path.GetExtension(filePath);
+
+				string newFileName = $"{baseName} (Encrypted){originalExtension}";
 				string destPath = Storage.CombinePaths(EncryptedModsFolder, newFileName);
 
 				int counter = 1;
 				while (Storage.FileExists(destPath))
 				{
-					newFileName = $"{baseName} (Encrypted)({counter}).scmod";
+					newFileName = $"{baseName} (Encrypted)({counter}){originalExtension}";
 					destPath = Storage.CombinePaths(EncryptedModsFolder, newFileName);
 					counter++;
 				}
 
+				// Lógica de encriptación (Intercalo de bytes: Pares primero, Impares después)
 				byte[] encryptedData = new byte[originalData.Length + headerBytes.Length];
 				Array.Copy(headerBytes, 0, encryptedData, 0, headerBytes.Length);
 				int destIndex = headerBytes.Length;
 
+				// Copia indices pares (0, 2, 4...)
 				for (int i = 0; i < originalData.Length; i += 2)
 					encryptedData[destIndex++] = originalData[i];
+
+				// Copia indices impares (1, 3, 5...)
 				for (int i = 1; i < originalData.Length; i += 2)
 					encryptedData[destIndex++] = originalData[i];
 
@@ -344,7 +356,7 @@ namespace Encryptor
 			public string DisplayName;
 			public string FullPath;
 			public bool IsDirectory;
-			public bool IsScmod;
+			public bool IsModFile; // Cambiado de IsScmod a IsModFile para soportar ambos
 			public long Size;
 		}
 	}
